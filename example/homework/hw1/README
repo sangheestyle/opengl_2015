@@ -1,15 +1,15 @@
-ex7: Visibility
+hw1: Lorenz Attractor
 
-Willem A. (Vlakkies) Schreuder
-CSCI4229/5229 Fall 2014
-
-Demonstrate hidden surface algorithms using cuboids.
+Sanghee Kim
+CSCI4229/5229 Summer 2015
 
 Key bindings
-  m/M    Cycle hidden surface modes
-  n/N    Cycle number of cubes
-  r/R    Reverse directon on magenta vace
-  a      Toggle axes
-  arrows Change view angle
+  arrows Change view angle (x, y)
+  z/Z    Change view angle (z)
   0      Reset view angle
+  a      Toggle axes
   ESC    Exit
+
+  r      Restart animation
+  s/S    Change step size
+  p/P    Change values of p of Lorenz Attractor
