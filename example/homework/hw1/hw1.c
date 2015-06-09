@@ -11,7 +11,7 @@
 #endif
 
 
-const int NUM_POINTS = 200000;
+#define NUM_POINTS 200000
 float lorenz_points[NUM_POINTS][3];
 
 // view angle
