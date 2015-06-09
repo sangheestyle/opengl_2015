@@ -170,10 +170,10 @@ void special(int key,int x,int y)
       view_angle_y -= 5;
    //  Up arrow key - increase elevation by 5 degrees
    else if (key == GLUT_KEY_UP)
-      view_angle_x += 5;
+      view_angle_x -= 5;
    //  Down arrow key - decrease elevation by 5 degrees
    else if (key == GLUT_KEY_DOWN)
-      view_angle_x -= 5;
+      view_angle_x += 5;
    //  Keep angles to +/-360 degrees
    view_angle_x %= 360;
    view_angle_y %= 360;
