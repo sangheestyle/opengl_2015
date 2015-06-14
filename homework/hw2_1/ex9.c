@@ -220,7 +220,7 @@ void display()
    }
 
    // Draw land
-   land(0, -1, 0, 3, 0.1, 3, 0);
+   land(0, -0.2f, 0, 3, 0.2, 3, 0);
 
    //  Draw cubes
    for (i=-1;i<=1;i++)
