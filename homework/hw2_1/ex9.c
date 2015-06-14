@@ -136,6 +136,61 @@ static void cube(double x,double y,double z,
    glPopMatrix();
 }
 
+static void land(double x, double y, double z,
+                 double dx, double dy, double dz,
+                 double th)
+{
+   //  Save transformation
+   glPushMatrix();
+   //  Offset
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(dx,dy,dz);
+   //  Cube
+   glBegin(GL_QUADS);
+   //  Front
+   glColor3f(1.0f,0.7f,0.4f);
+   glVertex3f(-1,-1, 1);
+   glVertex3f(+1,-1, 1);
+   glVertex3f(+1,+1, 1);
+   glVertex3f(-1,+1, 1);
+   //  Back
+   glColor3f(1.0f,0.7f,0.4f);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(-1,+1,-1);
+   glVertex3f(+1,+1,-1);
+   //  Right
+   glColor3f(0.9f,0.7f,0.4f);
+   glVertex3f(+1,-1,+1);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(+1,+1,-1);
+   glVertex3f(+1,+1,+1);
+   //  Left
+   glColor3f(0.9f,0.7f,0.4f);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(-1,-1,+1);
+   glVertex3f(-1,+1,+1);
+   glVertex3f(-1,+1,-1);
+
+   //  Top
+   glColor3f(0.745f,0.87f,0.420f);
+   glVertex3f(-1,+1,+1);
+   glVertex3f(+1,+1,+1);
+   glVertex3f(+1,+1,-1);
+   glVertex3f(-1,+1,-1);
+   //  Bottom
+   glColor3f(0.93f,0.63f,0.4f);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(+1,-1,+1);
+   glVertex3f(-1,-1,+1);
+   //  End
+   glEnd();
+   //  Undo transofrmations
+   glPopMatrix();
+}
+
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
  */
@@ -163,11 +218,14 @@ void display()
       glRotatef(ph,1,0,0);
       glRotatef(th,0,1,0);
    }
+
+   // Draw land
+   land(0, -1, 0, 3, 0.1, 3, 0);
+
    //  Draw cubes
    for (i=-1;i<=1;i++)
-      for (j=-1;j<=1;j++)
-         for (k=-1;k<=1;k++)
-            cube(i,j,k , 0.3,0.3,0.3 , 0);
+       for (k=-1;k<=1;k++)
+          cube(i,0,k , 0.2,0.2,0.2 , 0);
    //  Draw axes
    glColor3f(1,1,1);
    if (axes)
