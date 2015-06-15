@@ -1,7 +1,5 @@
 /*
- *  Projections
- *
- *  Draw 27 cubes to demonstrate orthogonal & prespective projections
+ *  Homework 2
  *
  *  Key bindings:
  *  m          Toggle between perspective and orthogonal
@@ -82,70 +80,13 @@ static void Project()
 }
 
 /*
- *  Draw a cube
+ *  Draw a tree
  *     at (x,y,z)
  *     dimentions (dx,dy,dz)
- *     rotated th about the y axis
- */
-static void cube(double x,double y,double z,
-                 double dx,double dy,double dz,
-                 double th)
-{
-   //  Save transformation
-   glPushMatrix();
-   //  Offset
-   glTranslated(x,y,z);
-   glRotated(th,0,1,0);
-   glScaled(dx,dy,dz);
-   //  Cube
-   glBegin(GL_QUADS);
-   //  Front
-   glColor3f(1,0,0);
-   glVertex3f(-1,-1, 1);
-   glVertex3f(+1,-1, 1);
-   glVertex3f(+1,+1, 1);
-   glVertex3f(-1,+1, 1);
-   //  Back
-   glColor3f(0,0,1);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(-1,+1,-1);
-   glVertex3f(+1,+1,-1);
-   //  Right
-   glColor3f(1,1,0);
-   glVertex3f(+1,-1,+1);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(+1,+1,-1);
-   glVertex3f(+1,+1,+1);
-   //  Left
-   glColor3f(0,1,0);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(-1,-1,+1);
-   glVertex3f(-1,+1,+1);
-   glVertex3f(-1,+1,-1);
-   //  Top
-   glColor3f(0,1,1);
-   glVertex3f(-1,+1,+1);
-   glVertex3f(+1,+1,+1);
-   glVertex3f(+1,+1,-1);
-   glVertex3f(-1,+1,-1);
-   //  Bottom
-   glColor3f(1,0,1);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(+1,-1,+1);
-   glVertex3f(-1,-1,+1);
-   //  End
-   glEnd();
-   //  Undo transofrmations
-   glPopMatrix();
-}
-
-/*
- *  Draw a cube
- *     at (x,y,z)
- *     dimentions (dx,dy,dz)
- *     rotated th about the y axis
+ *     rotated th about the x axis
+ *     trunk height and round (trunk_h, trunk_r)
+ *     leaves height and round (leaves_h, leaves_r)
+ *     type (type)
  */
 static void tree(double x,double y,double z,
                  double dx,double dy,double dz,
@@ -292,7 +233,6 @@ static void land(double x, double y, double z,
  */
 void display()
 {
-   int i,j,k;
    const double len=1.5;  //  Length of axes
    //  Erase the window and the depth buffer
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -314,7 +254,6 @@ void display()
       glRotatef(ph,1,0,0);
       glRotatef(th,0,1,0);
    }
-
 
    // Draw land
    land(0, -0.2f, 0,3,0.2, 3.5, 0);
@@ -448,7 +387,7 @@ int main(int argc,char* argv[])
    //  Request double buffered, true color window with Z buffering at 600x600
    glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
    glutInitWindowSize(600,600);
-   glutCreateWindow("Projections");
+   glutCreateWindow("Sanghee Kim");
    //  Set callbacks
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
