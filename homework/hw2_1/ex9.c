@@ -144,7 +144,10 @@ static void cube(double x,double y,double z,
  */
 static void tree(double x,double y,double z,
                  double dx,double dy,double dz,
-                 double th)
+                 double th,
+                 double trunk_h, double trunk_r,
+                 double leaves_h, double leaves_r,
+                 int type)
 {
    //  Save transformation
    glPushMatrix();
@@ -153,18 +156,55 @@ static void tree(double x,double y,double z,
    glRotated(th,0,1,0);
    glScaled(dx,dy,dz);
 
-   double d = (1.0/32) * (2*M_PI);  // 1/32 of a circle, for Java's functions.
+   double d = (1.0/32) * (2*M_PI);
+
+   // Draw Trunk
    glBegin(GL_QUAD_STRIP);
    glColor3f(0.8f,0.4f,0.2f);
-   double r = 0.2f;
-   double h = 1.0f;
    for (int i = 0; i <= 32; i++) {
        // Generate a pair of points, on top and bottom of the strip.
        glNormal3d( cos(d*i), 0, sin(d*i));  // Normal for BOTH points.
-       glVertex3d( r*cos(d*i), h, r*sin(d*i));  // Top point.
-       glVertex3d( r*cos(d*i), 0, r*sin(d*i));  // Bottom point.
+       glVertex3d( trunk_r*cos(d*i), trunk_h, trunk_r*sin(d*i));  // Top point.
+       glVertex3d( trunk_r*cos(d*i), 0, trunk_r*sin(d*i));  // Bottom point.
    }
    glEnd();
+
+   // Draw Leaves (Side)
+   glBegin(GL_QUAD_STRIP);
+   glColor3f(0,1,0);
+   for (int i = 0; i <= 32; i++) {
+       glNormal3d( cos(d*i), leaves_h, sin(d*i));
+       // Type 1: Cylinder style
+       if (type == 1)
+         glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
+                     leaves_r*sin(d*i));
+       // Type 2: Cone style
+       else if (type ==2)
+         glVertex3d( 0, trunk_h+leaves_h, 0);
+       glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
+   }
+   glEnd();
+
+   // Type 2, Cone, does not need to draw top of leaves
+   if (type == 1) {
+       // Draw Leaves (Top)
+       glBegin(GL_POLYGON);
+       glColor3f(1,1,0.5);
+       for (int i = 0; i <= 32; i++) {
+           glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
+                       leaves_r*sin(d*i));  // Top point.
+       }
+      glEnd();
+   }
+
+   // Draw Leaves (Bottom)
+   glBegin(GL_POLYGON);
+   glColor3f(0.5,1,0.5);
+   for (int i = 0; i <= 32; i++) {
+       glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
+   }
+   glEnd();
+
    //  Undo transofrmations
    glPopMatrix();
 }
@@ -262,7 +302,7 @@ void display()
           cube(i,0,k , 0.2,0.2,0.2 , 0);
    //  Draw axes
 */
-   tree(0,0,0 ,0.5,0.5,0.5, 0);
+   tree(0,0,0 ,0.5,0.5,0.5, 0, 0.6f, 0.2f, 2.0f, 1.0f, 1);
    glColor3f(1,1,1);
    if (axes)
    {
