@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
+#include <time.h>
+
 //  OpenGL with prototypes for glext
 #define GL_GLEXT_PROTOTYPES
 #ifdef __APPLE__
@@ -31,6 +33,9 @@ int ph=0;         //  Elevation of view angle
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 double dim=5.0;   //  Size of world
+
+// Tree level of green
+double leaves_colors[10];
 
 //  Macro for sin & cos in degrees
 #define Cos(th) cos(3.1415927/180*(th))
@@ -147,6 +152,7 @@ static void tree(double x,double y,double z,
                  double th,
                  double trunk_h, double trunk_r,
                  double leaves_h, double leaves_r,
+                 double green_depth,
                  int type)
 {
    //  Save transformation
@@ -171,7 +177,7 @@ static void tree(double x,double y,double z,
 
    // Draw Leaves (Side)
    glBegin(GL_QUAD_STRIP);
-   glColor3f(0,1,0);
+   glColor3f(0,green_depth,0);
    for (int i = 0; i <= 32; i++) {
        glNormal3d( cos(d*i), leaves_h, sin(d*i));
        // Type 1: Cylinder style
@@ -189,7 +195,7 @@ static void tree(double x,double y,double z,
    if (type == 1) {
        // Draw Leaves (Top)
        glBegin(GL_POLYGON);
-       glColor3f(1,1,0.5);
+       glColor3f(0,green_depth-0.1f,0);
        for (int i = 0; i <= 32; i++) {
            glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
                        leaves_r*sin(d*i));  // Top point.
@@ -199,7 +205,7 @@ static void tree(double x,double y,double z,
 
    // Draw Leaves (Bottom)
    glBegin(GL_POLYGON);
-   glColor3f(0.5,1,0.5);
+   glColor3f(0,green_depth+0.1f,0);
    for (int i = 0; i <= 32; i++) {
        glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
    }
@@ -293,16 +299,12 @@ void display()
    }
 
 
-/*
    // Draw land
    land(0, -0.2f, 0, 3, 0.2, 3, 0);
-   //  Draw cubes
-   for (i=-1;i<=1;i++)
-       for (k=-1;k<=1;k++)
-          cube(i,0,k , 0.2,0.2,0.2 , 0);
-   //  Draw axes
-*/
-   tree(0,0,0 ,0.5,0.5,0.5, 0, 0.6f, 0.2f, 2.0f, 1.0f, 1);
+   tree(0,0,0 ,0.5,0.5,0.5, 0, 0.6f, 0.2f, 2.0f, 1.0f, leaves_colors[0], 1);
+   tree(1,0,1 ,0.5,0.5,0.5, 0, 1.0f, 0.3f, 4.0f, 1.0f, leaves_colors[1], 2);
+   tree(2,0,3 ,0.5,0.5,0.5, 0, 1.0f, 0.3f, 3.0f, 1.0f, leaves_colors[2], 1);
+
    glColor3f(1,1,1);
    if (axes)
    {
@@ -408,6 +410,10 @@ void reshape(int width,int height)
  */
 int main(int argc,char* argv[])
 {
+  srand(time(NULL));
+  for (int i = 0; i <= 10; i++)
+    leaves_colors[i] = (rand()%(9 - 3) + 3)*0.1;
+
    //  Initialize GLUT
    glutInit(&argc,argv);
    //  Request double buffered, true color window with Z buffering at 600x600
