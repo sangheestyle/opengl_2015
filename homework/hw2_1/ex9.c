@@ -159,7 +159,7 @@ static void tree(double x,double y,double z,
    glPushMatrix();
    //  Offset
    glTranslated(x,y,z);
-   glRotated(th,0,1,0);
+   glRotated(th,1,0,0);
    glScaled(dx,dy,dz);
 
    double d = (1.0/32) * (2*M_PI);
@@ -180,25 +180,37 @@ static void tree(double x,double y,double z,
    glColor3f(0,green_depth,0);
    for (int i = 0; i <= 32; i++) {
        glNormal3d( cos(d*i), leaves_h, sin(d*i));
-       // Type 1: Cylinder style
-       if (type == 1)
+       // Type 2: Upside narrow
+       if (type == 2)
+         glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h+leaves_h,
+                     leaves_r*0.5f*sin(d*i));
+       // Type 4: Cone style
+       else if (type == 4)
+         glVertex3d( 0, trunk_h+leaves_h, 0);
+       else
          glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
                      leaves_r*sin(d*i));
-       // Type 2: Cone style
-       else if (type ==2)
-         glVertex3d( 0, trunk_h+leaves_h, 0);
-       glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
+
+       if (type == 3)
+         glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h, leaves_r*0.5f*sin(d*i));
+       else
+         glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
    }
    glEnd();
 
-   // Type 2, Cone, does not need to draw top of leaves
-   if (type == 1) {
+   // Type 4, Cone, does not need to draw top of leaves
+   if (type != 4) {
        // Draw Leaves (Top)
        glBegin(GL_POLYGON);
        glColor3f(0,green_depth-0.1f,0);
        for (int i = 0; i <= 32; i++) {
-           glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
-                       leaves_r*sin(d*i));  // Top point.
+           // Type 2: Upside narrow
+           if (type == 2)
+               glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h+leaves_h,
+                           leaves_r*0.5f*sin(d*i));
+           else
+               glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
+                           leaves_r*sin(d*i));  // Top point.
        }
       glEnd();
    }
@@ -207,7 +219,12 @@ static void tree(double x,double y,double z,
    glBegin(GL_POLYGON);
    glColor3f(0,green_depth+0.1f,0);
    for (int i = 0; i <= 32; i++) {
-       glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
+       // Type 2: Upside narrow
+       if (type == 3)
+           glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h,
+                       leaves_r*0.5f*sin(d*i));
+       else
+           glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
    }
    glEnd();
 
@@ -300,10 +317,22 @@ void display()
 
 
    // Draw land
-   land(0, -0.2f, 0, 3, 0.2, 3, 0);
-   tree(0,0,0 ,0.5,0.5,0.5, 0, 0.6f, 0.2f, 2.0f, 1.0f, leaves_colors[0], 1);
-   tree(1,0,1 ,0.5,0.5,0.5, 0, 1.0f, 0.3f, 4.0f, 1.0f, leaves_colors[1], 2);
-   tree(2,0,3 ,0.5,0.5,0.5, 0, 1.0f, 0.3f, 3.0f, 1.0f, leaves_colors[2], 1);
+   land(0, -0.2f, 0,3,0.2, 3.5, 0);
+
+   // Draw forest
+   tree(2.5f,-0.1f,0.0f, 0.3,0.3,0.3, 0, 1.0f,0.2f,2.0f,1.0f, leaves_colors[0], 2);
+   tree(2.0f,-0.1f,0.0f, 0.3,0.3,0.3, 0, 1.0f,0.2f,2.0f,1.0f, leaves_colors[5], 3);
+   tree(0.0f,-0.1f,-2.5f, 0.3,0.5,0.3, 0, 1.2f,0.2f,2.0f,1.0f, leaves_colors[1], 2);
+   tree(-1.2f,-0.1f,-1.0f, 0.3,0.5,0.7, 0, 0.9f,0.2f,2.0f,1.0f, leaves_colors[3], 3);
+   tree(0,-0.2f,0 ,0.8,0.5,0.8, 30, 1.9f,0.2f,2.0f,1.0f, leaves_colors[4], 1);
+
+   tree(1,0,1 ,0.5,0.5,0.5, 0, 1.0f,0.3f,4.0f,1.0f, leaves_colors[6], 2);
+   tree(1.5f,0,3 ,0.5,0.5,0.5, 0, 1.1f,0.3f,3.0f,1.0f, leaves_colors[7], 3);
+   tree(-1.2f,0,3 ,0.5,0.5,0.5, 0, 0.3f,0.3f,3.0f,1.0f, leaves_colors[8], 4);
+   tree(-1.0f,0,-2.0f ,0.5,0.5,0.5, 0, 1.0f,0.3f,3.0f,0.5f, leaves_colors[9], 2);
+   tree(-2.1f,0,-1.0f ,0.5,0.5,0.5, 0, 0.1f,0.3f,2.0f,1.0f, leaves_colors[0], 1);
+   tree(-2.0f,0,-2.5f ,0.5,0.5,0.5, 0, 0.2f,0.3f,1.5f,1.0f, leaves_colors[1], 3);
+   tree(-2.5f,0,-2.0f ,0.5,0.5,0.5, 0, 0.3f,0.3f,3.0f,1.0f, leaves_colors[2], 4);
 
    glColor3f(1,1,1);
    if (axes)
