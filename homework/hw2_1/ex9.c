@@ -136,6 +136,39 @@ static void cube(double x,double y,double z,
    glPopMatrix();
 }
 
+/*
+ *  Draw a cube
+ *     at (x,y,z)
+ *     dimentions (dx,dy,dz)
+ *     rotated th about the y axis
+ */
+static void tree(double x,double y,double z,
+                 double dx,double dy,double dz,
+                 double th)
+{
+   //  Save transformation
+   glPushMatrix();
+   //  Offset
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(dx,dy,dz);
+
+   double d = (1.0/32) * (2*M_PI);  // 1/32 of a circle, for Java's functions.
+   glBegin(GL_QUAD_STRIP);
+   glColor3f(0.8f,0.4f,0.2f);
+   double r = 0.2f;
+   double h = 1.0f;
+   for (int i = 0; i <= 32; i++) {
+       // Generate a pair of points, on top and bottom of the strip.
+       glNormal3d( cos(d*i), 0, sin(d*i));  // Normal for BOTH points.
+       glVertex3d( r*cos(d*i), h, r*sin(d*i));  // Top point.
+       glVertex3d( r*cos(d*i), 0, r*sin(d*i));  // Bottom point.
+   }
+   glEnd();
+   //  Undo transofrmations
+   glPopMatrix();
+}
+
 static void land(double x, double y, double z,
                  double dx, double dy, double dz,
                  double th)
@@ -219,14 +252,17 @@ void display()
       glRotatef(th,0,1,0);
    }
 
+
+/*
    // Draw land
    land(0, -0.2f, 0, 3, 0.2, 3, 0);
-
    //  Draw cubes
    for (i=-1;i<=1;i++)
        for (k=-1;k<=1;k++)
           cube(i,0,k , 0.2,0.2,0.2 , 0);
    //  Draw axes
+*/
+   tree(0,0,0 ,0.5,0.5,0.5, 0);
    glColor3f(1,1,1);
    if (axes)
    {
