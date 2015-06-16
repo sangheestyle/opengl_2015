@@ -24,6 +24,11 @@
 #include <GL/glut.h>
 #endif
 
+// Header on mac has M_PI otherwise don't
+#ifndef M_PI
+  #define M_PI 3.14159265358979323846
+#endif
+
 int axes=0;       //  Display axes
 int mode=0;       //  Projection mode
 int th=0;         //  Azimuth of view angle
