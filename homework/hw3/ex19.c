@@ -138,9 +138,9 @@ void display()
    else
       glDisable(GL_LIGHTING);
 
-   coin(-1,0,1,2,0.1,spin*30,0);
-   coin(3,0,-4,2,0.1,30,0);
-   coin(-2,0,-5,2,0.1,0,90);
+   coin(-1,2,1,2,0.1,spin*30,0);
+   coin(3,2,-4,2,0.1,30,0);
+   coin(-2,0.1,-5,2,0.1,0,90);
    //  Draw axes
    glDisable(GL_LIGHTING);
    glColor3f(1,1,1);
