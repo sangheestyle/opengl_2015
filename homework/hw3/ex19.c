@@ -11,11 +11,13 @@
  *  0          Reset view angle
  *  ESC        Exit
  */
+#include <time.h>
 #include "CSCIx229.h"
 int axes=0;       //  Display axes
 int th=0;         //  Azimuth of view angle
 int ph=0;         //  Elevation of view angle
 int zh=0;         //  Azimuth of light
+int spin=0;
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 double dim=3.0;   //  Size of world
@@ -45,7 +47,7 @@ static void ball(double x,double y,double z,double r)
  *  Draw a coin at (x,y,z) radius r thickness 2d
  *  The resolution is fixed at 36 slices (10 degrees each)
  */
-static void coin(double x,double y,double z,double r,double d)
+static void coin(double x,double y,double z,double r,double d, int sa, int xr)
 {
    int i,k;
    glEnable(GL_TEXTURE_2D);
@@ -53,6 +55,8 @@ static void coin(double x,double y,double z,double r,double d)
    glPushMatrix();
    //  Offset and scale
    glTranslated(x,y,z);
+   glRotated(sa,0,1,0);
+   glRotated(xr,1,0,0);
    glScaled(r,r,d);
    //  Head & Tail
    glColor3f(1,1,1);
@@ -113,7 +117,7 @@ void display()
       float Specular[]  = {1,1,0,1};
       float white[]     = {1,1,1,1};
       //  Light direction
-      float Position[]  = {5*Cos(zh),0,5*Sin(zh),1};
+      float Position[]  = {7*Cos(zh),0,5*Sin(zh),1};
       //  Draw light position as ball (still no lighting here)
       ball(Position[0],Position[1],Position[2] , 0.1);
       //  Enable lighting with normalization
@@ -133,7 +137,10 @@ void display()
    }
    else
       glDisable(GL_LIGHTING);
-   coin(0,0,0,2,0.1);
+
+   coin(-1,0,1,2,0.1,spin*30,0);
+   coin(3,0,-4,2,0.1,30,0);
+   coin(-2,0,-5,2,0.1,0,90);
    //  Draw axes
    glDisable(GL_LIGHTING);
    glColor3f(1,1,1);
@@ -207,12 +214,15 @@ void key(unsigned char ch,int x,int y)
    //  Reset view angle
    else if (ch == '0')
       th = ph = 0;
+   else if (ch == 's')
+      spin += 45;
    //  Toggle axes
    else if (ch == 'a' || ch == 'A')
       axes = 1-axes;
    //  Toggle light
    else if (ch == 'l' || ch == 'L')
       light = 1-light;
+   spin %= 360;
    //  Reproject
    Project(fov,asp,dim);
    //  Tell GLUT it is necessary to redisplay the scene
@@ -245,6 +255,16 @@ void idle()
 }
 
 /*
+ * Calc rotation
+ */
+void timerFunc()
+{
+  spin += 1;
+  spin %= 360;
+  glutTimerFunc(1, timerFunc, 0);
+}
+
+/*
  *  Start up GLUT and tell it what to do
  */
 int main(int argc,char* argv[])
@@ -267,6 +287,7 @@ int main(int argc,char* argv[])
    edge = LoadTexBMP("edge.bmp");
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
+   glutTimerFunc(1, timerFunc, 0);
    glutMainLoop();
    return 0;
 }
