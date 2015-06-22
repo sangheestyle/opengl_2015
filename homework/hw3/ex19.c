@@ -22,6 +22,8 @@ int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 double dim=10.0;   //  Size of world
 int    light=1;    //  Lighting
+int move=1;        // Move light
+float ylight=5;    // Elevation of light
 unsigned int head,tail,edge;  //  Textures
 
 // Light values
@@ -31,7 +33,6 @@ int diffuse   = 100;  // Diffuse intensity (%)
 int specular  =   0;  // Specular intensity (%)
 int shininess =   0;  // Shininess (power of two)
 float shinyvec[1];    // Shininess (value)
-float ylight  =   0;  // Elevation of light
 unsigned int texture[7]; // Texture names
 unsigned int board;
 unsigned int marble;
@@ -302,7 +303,7 @@ void display()
       float Specular[]  = {1,1,0,1};
       float white[]     = {1,1,1,1};
       //  Light direction
-      float Position[]  = {7*Cos(zh),0,5*Sin(zh),1};
+      float Position[]  = {10*Cos(zh),ylight,10*Sin(zh),1.0};
       //  Draw light position as ball (still no lighting here)
       ball(Position[0],Position[1],Position[2] , 0.1);
       //  Enable lighting with normalization
@@ -362,6 +363,18 @@ void display()
 }
 
 /*
+ *  GLUT calls this routine when the window is resized
+ */
+void idle()
+{
+   //  Elapsed time in seconds
+   double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
+   zh = fmod(90*t,360.0);
+   //  Tell GLUT it is necessary to redisplay the scene
+   glutPostRedisplay();
+}
+
+/*
  *  GLUT calls this routine when an arrow key is pressed
  */
 void special(int key,int x,int y)
@@ -404,15 +417,23 @@ void key(unsigned char ch,int x,int y)
    //  Reset view angle
    else if (ch == '0')
       th = ph = 0;
-   else if (ch == 's')
-      spin += 45;
    //  Toggle axes
    else if (ch == 'a' || ch == 'A')
       axes = 1-axes;
    //  Toggle light
    else if (ch == 'l' || ch == 'L')
       light = 1-light;
+   //  Toggle light movement
+   else if (ch == 's' || ch == 'S')
+      move = 1-move;
+   //  Light elevation
+   else if (ch=='[')
+      ylight -= 0.1;
+   else if (ch==']')
+      ylight += 0.1;
+
    spin %= 360;
+   glutIdleFunc(move?idle:NULL);
    //  Reproject
    Project(fov,asp,dim);
    //  Tell GLUT it is necessary to redisplay the scene
@@ -432,17 +453,6 @@ void reshape(int width,int height)
    Project(fov,asp,dim);
 }
 
-/*
- *  GLUT calls this routine when the window is resized
- */
-void idle()
-{
-   //  Elapsed time in seconds
-   double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
-   zh = fmod(90*t,360.0);
-   //  Tell GLUT it is necessary to redisplay the scene
-   glutPostRedisplay();
-}
 
 /*
  * Calc rotation
