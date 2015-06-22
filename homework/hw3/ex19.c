@@ -34,6 +34,7 @@ float shinyvec[1];    // Shininess (value)
 float ylight  =   0;  // Elevation of light
 unsigned int texture[7]; // Texture names
 unsigned int board;
+unsigned int marble;
 
 int ntex=0;
 int mode=0;
@@ -84,7 +85,7 @@ static void monopoly_board(double x,double y,double z,
    glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
    glColor3f(1,1,1);
    //  Front
-   glBindTexture(GL_TEXTURE_2D,texture[0]);
+   glBindTexture(GL_TEXTURE_2D,marble);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0, 1);
    glTexCoord2f(0,0); glVertex3f(-1,-1, 1);
@@ -93,7 +94,7 @@ static void monopoly_board(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+1, 1);
    glEnd();
    //  Back
-   glBindTexture(GL_TEXTURE_2D,texture[1]);
+   glBindTexture(GL_TEXTURE_2D,marble);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,-1);
    glTexCoord2f(0,0); glVertex3f(+1,-1,-1);
@@ -102,7 +103,7 @@ static void monopoly_board(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+1,-1);
    glEnd();
    //  Right
-   glBindTexture(GL_TEXTURE_2D,texture[2]);
+   glBindTexture(GL_TEXTURE_2D,marble);
    glBegin(GL_QUADS);
    glNormal3f(+1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(+1,-1,+1);
@@ -111,7 +112,7 @@ static void monopoly_board(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+1,+1);
    glEnd();
    //  Left
-   glBindTexture(GL_TEXTURE_2D,texture[3]);
+   glBindTexture(GL_TEXTURE_2D,marble);
    glBegin(GL_QUADS);
    glNormal3f(-1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
@@ -129,7 +130,7 @@ static void monopoly_board(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
    glEnd();
    //  Bottom
-   glBindTexture(GL_TEXTURE_2D,texture[5]);
+   glBindTexture(GL_TEXTURE_2D,marble);
    glBegin(GL_QUADS);
    glNormal3f( 0,-1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
@@ -322,11 +323,12 @@ void display()
    else
       glDisable(GL_LIGHTING);
 
+   // Draw scene
    coin(-1,2,1,2,0.1,spin*30,0);
    coin(3,2,-4,2,0.1,30,0);
    coin(-2,0.1,-5,2,0.1,0,90);
-   dice(2,0,2, 1.0,1.0,1.0, 0);
-   dice(4.5,0,3, 1.0,1.0,1.0, 180);
+   dice(2,1,2, 1.0,1.0,1.0, 0);
+   dice(4.5,1,3, 1.0,1.0,1.0, 180);
    monopoly_board(0,-0.1,0, 15,0.01,15, 0);
 
    //  Draw axes
@@ -480,6 +482,7 @@ int main(int argc,char* argv[])
    texture[4] = LoadTexBMP("dice_top.bmp");
    texture[5] = LoadTexBMP("dice_bottom.bmp");
    board = LoadTexBMP("monopoly_board.bmp");
+   marble = LoadTexBMP("marble.bmp");
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutTimerFunc(1, timerFunc, 0);
