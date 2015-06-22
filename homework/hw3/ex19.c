@@ -24,7 +24,6 @@ double dim=13.3;   //  Size of world
 int    light=1;    //  Lighting
 int move=1;        // Move light
 float ylight=5;    // Elevation of light
-unsigned int head,tail,edge;  //  Textures
 
 // Light values
 int emission  =   0;  // Emission intensity (%)
@@ -33,9 +32,13 @@ int diffuse   = 100;  // Diffuse intensity (%)
 int specular  =   0;  // Specular intensity (%)
 int shininess =   0;  // Shininess (power of two)
 float shinyvec[1];    // Shininess (value)
-unsigned int texture[7]; // Texture names
+
+// Texture
+unsigned int texture[6]; // dice
 unsigned int board;
 unsigned int marble;
+unsigned int head,tail,edge;  //  Textures
+unsigned int nickel_head,nickel_tail,nickel_edge;  //  Textures
 
 int ntex=0;
 int mode=0;
@@ -263,6 +266,53 @@ static void coin(double x,double y,double z,double r,double d, int sa, int xr)
 }
 
 /*
+ *  Draw a nickel coin at (x,y,z) radius r thickness 2d
+ *  The resolution is fixed at 36 slices (10 degrees each)
+ */
+static void nickel(double x,double y,double z,double r,double d, int sa, int xr)
+{
+   int i,k;
+   glEnable(GL_TEXTURE_2D);
+   //  Save transformation
+   glPushMatrix();
+   //  Offset and scale
+   glTranslated(x,y,z);
+   glRotated(sa,0,1,0);
+   glRotated(xr,1,0,0);
+   glScaled(r,r,d);
+   //  Head & Tail
+   glColor3f(1,1,1);
+   for (i=1;i>=-1;i-=2)
+   {
+      glBindTexture(GL_TEXTURE_2D,i>0?nickel_tail:nickel_head);
+      glNormal3f(0,0,i);
+      glBegin(GL_TRIANGLE_FAN);
+      glTexCoord2f(0.5,0.5);
+      glVertex3f(0,0,i);
+      for (k=0;k<=360;k+=10)
+      {
+         glTexCoord2f(0.5*Cos(k)+0.5,0.5*Sin(k)+0.5);
+         glVertex3f(i*Cos(k),Sin(k),i);
+      }
+      glEnd();
+   }
+   //  Edge
+   glBindTexture(GL_TEXTURE_2D,nickel_edge);
+   glColor3f(1.00,0.77,0.36);
+   glBegin(GL_QUAD_STRIP);
+   for (k=0;k<=360;k+=10)
+   {
+      glNormal3f(Cos(k),Sin(k),0);
+      glTexCoord2f(0,0.5*k); glVertex3f(Cos(k),Sin(k),+1);
+      glTexCoord2f(1,0.5*k); glVertex3f(Cos(k),Sin(k),-1);
+   }
+   glEnd();
+   //  Undo transformations
+   glPopMatrix();
+   glDisable(GL_TEXTURE_2D);
+}
+
+/*
  *  OpenGL (GLUT) calls this routine to display the scene
  */
 void display()
@@ -312,7 +362,7 @@ void display()
 
    // Draw scene
    coin(-1.5,2,1,  2,0.1,spin*30, 0);
-   coin(3,2,-4,  2,0.1,30,      0);
+   nickel(3,2,-4,  1,0.1,30,      0);
    coin(-2,0.1,  -5,2,0.1,0,   90);
    dice(2.5,1,1.5,   1.0,1.0,1.0,   0);
    dice(5.0,1,2.5, 1.0,1.0,1.0, 180);
@@ -471,6 +521,9 @@ int main(int argc,char* argv[])
    head = LoadTexBMP("head.bmp");
    tail = LoadTexBMP("tail.bmp");
    edge = LoadTexBMP("edge.bmp");
+   nickel_head = LoadTexBMP("nickel_head.bmp");
+   nickel_tail = LoadTexBMP("nickel_tail.bmp");
+   nickel_edge = LoadTexBMP("edge.bmp");
    texture[0] = LoadTexBMP("dice_front.bmp");
    texture[1] = LoadTexBMP("dice_back.bmp");
    texture[2] = LoadTexBMP("dice_left.bmp");
