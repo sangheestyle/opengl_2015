@@ -57,12 +57,12 @@ static void ball(double x,double y,double z,double r)
 }
 
 /*
- *  Draw a cube
+ *  Draw a dice
  *     at (x,y,z)
  *     dimentions (dx,dy,dz)
  *     rotated th about the y axis
  */
-static void cube(double x,double y,double z,
+static void dice(double x,double y,double z,
                  double dx,double dy,double dz,
                  double th)
 {
@@ -239,7 +239,8 @@ void display()
    coin(-1,2,1,2,0.1,spin*30,0);
    coin(3,2,-4,2,0.1,30,0);
    coin(-2,0.1,-5,2,0.1,0,90);
-   cube(2,0,2, 0.5,0.5,0.5, 0);
+   dice(2,0,2, 1.0,1.0,1.0, 0);
+   dice(4.5,0,3, 1.0,1.0,1.0, 180);
 
    //  Draw axes
    glDisable(GL_LIGHTING);
