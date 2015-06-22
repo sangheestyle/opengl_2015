@@ -20,7 +20,7 @@ int zh=0;         //  Azimuth of light
 int spin=0;
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
-double dim=15.0;   //  Size of world
+double dim=10.0;   //  Size of world
 int    light=1;    //  Lighting
 unsigned int head,tail,edge;  //  Textures
 
@@ -324,12 +324,12 @@ void display()
       glDisable(GL_LIGHTING);
 
    // Draw scene
-   coin(-1,2,1,2,0.1,spin*30,0);
-   coin(3,2,-4,2,0.1,30,0);
-   coin(-2,0.1,-5,2,0.1,0,90);
-   dice(2,1,2, 1.0,1.0,1.0, 0);
+   coin(-1,2,1,  2,0.1,spin*30, 0);
+   coin(3,2,-4,  2,0.1,30,      0);
+   coin(-2,0.1,  -5,2,0.1,0,   90);
+   dice(2,1,2,   1.0,1.0,1.0,   0);
    dice(4.5,1,3, 1.0,1.0,1.0, 180);
-   monopoly_board(0,-0.1,0, 15,0.01,15, 0);
+   monopoly_board(0,-0.1,0, 25,0.01,25, 0);
 
    //  Draw axes
    glDisable(GL_LIGHTING);
@@ -463,8 +463,8 @@ int main(int argc,char* argv[])
    glutInit(&argc,argv);
    //  Request double buffered, true color window with Z buffering at 600x600
    glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH | GLUT_DOUBLE);
-   glutInitWindowSize(600,600);
-   glutCreateWindow("Gold 10 Dollar");
+   glutInitWindowSize(900,600);
+   glutCreateWindow("Sanghee Kim");
    //  Set callbacks
    glutDisplayFunc(display);
    glutReshapeFunc(reshape);
