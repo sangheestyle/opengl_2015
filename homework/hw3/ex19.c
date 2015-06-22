@@ -14,13 +14,13 @@
 #include <time.h>
 #include "CSCIx229.h"
 int axes=0;       //  Display axes
-int th=0;         //  Azimuth of view angle
-int ph=0;         //  Elevation of view angle
+int th=-30;         //  Azimuth of view angle
+int ph=45;         //  Elevation of view angle
 int zh=0;         //  Azimuth of light
 int spin=0;
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
-double dim=3.0;   //  Size of world
+double dim=15.0;   //  Size of world
 int    light=1;    //  Lighting
 unsigned int head,tail,edge;  //  Textures
 
