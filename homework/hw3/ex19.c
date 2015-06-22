@@ -298,7 +298,7 @@ static void nickel(double x,double y,double z,double r,double d, int sa, int xr)
    }
    //  Edge
    glBindTexture(GL_TEXTURE_2D,nickel_edge);
-   glColor3f(1.00,0.77,0.36);
+   glColor3f(1,1,1);
    glBegin(GL_QUAD_STRIP);
    for (k=0;k<=360;k+=10)
    {
@@ -362,8 +362,10 @@ void display()
 
    // Draw scene
    coin(-1.5,2,1,  2,0.1,spin*30, 0);
-   nickel(3,2,-4,  1,0.1,30,      0);
    coin(-2,0.1,  -5,2,0.1,0,   90);
+   nickel(4,1,-4,  1,0.1,30,    0);
+   nickel(3,0.1,-6,  1,0.1,30,   270);
+   nickel(2,0.1,-3,  1,0.1,30,   90);
    dice(2.5,1,1.5,   1.0,1.0,1.0,   0);
    dice(5.0,1,2.5, 1.0,1.0,1.0, 180);
    monopoly_board(0,-0.1,0, 25,0.01,25, 0);
