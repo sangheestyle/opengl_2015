@@ -1,15 +1,5 @@
 /*
- *  Coin
- *
- *  Draw a gold coin to demonstrate drawing a textured cylinder.
- *
- *  Key bindings:
- *  l/L        Toggle lighting
- *  a/A        Toggle axes
- *  arrows     Change view angle
- *  PgDn/PgUp  Zoom in and out
- *  0          Reset view angle
- *  ESC        Exit
+ * Homework 3
  */
 #include <time.h>
 #include "CSCIx229.h"

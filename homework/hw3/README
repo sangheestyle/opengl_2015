@@ -1,12 +1,13 @@
-ex19: Coin
+homework 3
 
-Willem A. (Vlakkies) Schreuder
-CSCI4229/5229 Fall 2014
-
-Draw a gold coin to demonstrate drawing a textured cylinder.
+Sanghee Kim
+I use source code written by Willem A. (Vlakkies) Schreuder
+CSCI4229/5229 Fall 2014 as base source code.
 
 Key bindings
   l/L        Toggle lighting
+  []         Lower/rise light
+  s/S        Toggle light movement
   a/A        Toggle axes
   arrows     Change view angle
   PgDn/PgUp  Zoom in and out
