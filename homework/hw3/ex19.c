@@ -24,6 +24,19 @@ double dim=15.0;   //  Size of world
 int    light=1;    //  Lighting
 unsigned int head,tail,edge;  //  Textures
 
+// Light values
+int emission  =   0;  // Emission intensity (%)
+int ambient   =  30;  // Ambient intensity (%)
+int diffuse   = 100;  // Diffuse intensity (%)
+int specular  =   0;  // Specular intensity (%)
+int shininess =   0;  // Shininess (power of two)
+float shinyvec[1];    // Shininess (value)
+float ylight  =   0;  // Elevation of light
+unsigned int texture[7]; // Texture names
+
+int ntex=0;
+int mode=0;
+
 /*
  *  Draw a ball
  *     at (x,y,z)
@@ -41,6 +54,91 @@ static void ball(double x,double y,double z,double r)
    glutSolidSphere(1.0,16,16);
    //  Undo transofrmations
    glPopMatrix();
+}
+
+/*
+ *  Draw a cube
+ *     at (x,y,z)
+ *     dimentions (dx,dy,dz)
+ *     rotated th about the y axis
+ */
+static void cube(double x,double y,double z,
+                 double dx,double dy,double dz,
+                 double th)
+{
+   //  Set specular color to white
+   float white[] = {1,1,1,1};
+   float Emission[]  = {0.0,0.0,0.01*emission,1.0};
+   //glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
+   //glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
+   //glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
+   //  Save transformation
+   glPushMatrix();
+   //  Offset, scale and rotate
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(dx,dy,dz);
+   //  Enable textures
+   glEnable(GL_TEXTURE_2D);
+   glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
+   glColor3f(1,1,1);
+   //  Front
+   glBindTexture(GL_TEXTURE_2D,texture[0]);
+   glBegin(GL_QUADS);
+   glNormal3f( 0, 0, 1);
+   glTexCoord2f(0,0); glVertex3f(-1,-1, 1);
+   glTexCoord2f(1,0); glVertex3f(+1,-1, 1);
+   glTexCoord2f(1,1); glVertex3f(+1,+1, 1);
+   glTexCoord2f(0,1); glVertex3f(-1,+1, 1);
+   glEnd();
+   //  Back
+   glBindTexture(GL_TEXTURE_2D,texture[1]);
+   glBegin(GL_QUADS);
+   glNormal3f( 0, 0,-1);
+   glTexCoord2f(0,0); glVertex3f(+1,-1,-1);
+   glTexCoord2f(1,0); glVertex3f(-1,-1,-1);
+   glTexCoord2f(1,1); glVertex3f(-1,+1,-1);
+   glTexCoord2f(0,1); glVertex3f(+1,+1,-1);
+   glEnd();
+   //  Right
+   glBindTexture(GL_TEXTURE_2D,texture[2]);
+   glBegin(GL_QUADS);
+   glNormal3f(+1, 0, 0);
+   glTexCoord2f(0,0); glVertex3f(+1,-1,+1);
+   glTexCoord2f(1,0); glVertex3f(+1,-1,-1);
+   glTexCoord2f(1,1); glVertex3f(+1,+1,-1);
+   glTexCoord2f(0,1); glVertex3f(+1,+1,+1);
+   glEnd();
+   //  Left
+   glBindTexture(GL_TEXTURE_2D,texture[3]);
+   glBegin(GL_QUADS);
+   glNormal3f(-1, 0, 0);
+   glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
+   glTexCoord2f(1,0); glVertex3f(-1,-1,+1);
+   glTexCoord2f(1,1); glVertex3f(-1,+1,+1);
+   glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
+   glEnd();
+   //  Top
+   glBindTexture(GL_TEXTURE_2D,texture[4]);
+   glBegin(GL_QUADS);
+   glNormal3f( 0,+1, 0);
+   glTexCoord2f(0,0); glVertex3f(-1,+1,+1);
+   glTexCoord2f(1,0); glVertex3f(+1,+1,+1);
+   glTexCoord2f(1,1); glVertex3f(+1,+1,-1);
+   glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
+   glEnd();
+   //  Bottom
+   glBindTexture(GL_TEXTURE_2D,texture[5]);
+   glBegin(GL_QUADS);
+   glNormal3f( 0,-1, 0);
+   glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
+   glTexCoord2f(1,0); glVertex3f(+1,-1,-1);
+   glTexCoord2f(1,1); glVertex3f(+1,-1,+1);
+   glTexCoord2f(0,1); glVertex3f(-1,-1,+1);
+   glEnd();
+   //  Undo transformations and textures
+   glPopMatrix();
+   glDisable(GL_TEXTURE_2D);
 }
 
 /*
@@ -141,6 +239,8 @@ void display()
    coin(-1,2,1,2,0.1,spin*30,0);
    coin(3,2,-4,2,0.1,30,0);
    coin(-2,0.1,-5,2,0.1,0,90);
+   cube(2,0,2, 0.5,0.5,0.5, 0);
+
    //  Draw axes
    glDisable(GL_LIGHTING);
    glColor3f(1,1,1);
@@ -285,6 +385,12 @@ int main(int argc,char* argv[])
    head = LoadTexBMP("head.bmp");
    tail = LoadTexBMP("tail.bmp");
    edge = LoadTexBMP("edge.bmp");
+   texture[0] = LoadTexBMP("dice_front.bmp");
+   texture[1] = LoadTexBMP("dice_back.bmp");
+   texture[2] = LoadTexBMP("dice_left.bmp");
+   texture[3] = LoadTexBMP("dice_right.bmp");
+   texture[4] = LoadTexBMP("dice_top.bmp");
+   texture[5] = LoadTexBMP("dice_bottom.bmp");
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutTimerFunc(1, timerFunc, 0);
