@@ -14,13 +14,13 @@
 #include <time.h>
 #include "CSCIx229.h"
 int axes=0;       //  Display axes
-int th=-30;         //  Azimuth of view angle
-int ph=45;         //  Elevation of view angle
+int th=-20;         //  Azimuth of view angle
+int ph=40;         //  Elevation of view angle
 int zh=0;         //  Azimuth of light
 int spin=0;
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
-double dim=10.0;   //  Size of world
+double dim=13.3;   //  Size of world
 int    light=1;    //  Lighting
 int move=1;        // Move light
 float ylight=5;    // Elevation of light
@@ -69,12 +69,6 @@ static void monopoly_board(double x,double y,double z,
                  double dx,double dy,double dz,
                  double th)
 {
-   //  Set specular color to white
-   float white[] = {1,1,1,1};
-   float Emission[]  = {0.0,0.0,0.01*emission,1.0};
-   //glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-   //glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-   //glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
    //  Save transformation
    glPushMatrix();
    //  Offset, scale and rotate
@@ -83,7 +77,6 @@ static void monopoly_board(double x,double y,double z,
    glScaled(dx,dy,dz);
    //  Enable textures
    glEnable(GL_TEXTURE_2D);
-   glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
    glColor3f(1,1,1);
    //  Front
    glBindTexture(GL_TEXTURE_2D,marble);
@@ -154,12 +147,6 @@ static void dice(double x,double y,double z,
                  double dx,double dy,double dz,
                  double th)
 {
-   //  Set specular color to white
-   float white[] = {1,1,1,1};
-   float Emission[]  = {0.0,0.0,0.01*emission,1.0};
-   //glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shinyvec);
-   //glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,white);
-   //glMaterialfv(GL_FRONT_AND_BACK,GL_EMISSION,Emission);
    //  Save transformation
    glPushMatrix();
    //  Offset, scale and rotate
@@ -168,7 +155,6 @@ static void dice(double x,double y,double z,
    glScaled(dx,dy,dz);
    //  Enable textures
    glEnable(GL_TEXTURE_2D);
-   glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,mode?GL_REPLACE:GL_MODULATE);
    glColor3f(1,1,1);
    //  Front
    glBindTexture(GL_TEXTURE_2D,texture[0]);
@@ -325,11 +311,11 @@ void display()
       glDisable(GL_LIGHTING);
 
    // Draw scene
-   coin(-1,2,1,  2,0.1,spin*30, 0);
+   coin(-1.5,2,1,  2,0.1,spin*30, 0);
    coin(3,2,-4,  2,0.1,30,      0);
    coin(-2,0.1,  -5,2,0.1,0,   90);
-   dice(2,1,2,   1.0,1.0,1.0,   0);
-   dice(4.5,1,3, 1.0,1.0,1.0, 180);
+   dice(2.5,1,1.5,   1.0,1.0,1.0,   0);
+   dice(5.0,1,2.5, 1.0,1.0,1.0, 180);
    monopoly_board(0,-0.1,0, 25,0.01,25, 0);
 
    //  Draw axes
