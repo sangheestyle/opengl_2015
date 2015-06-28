@@ -205,7 +205,6 @@ void display()
    else
       glDisable(GL_LIGHTING);
 
-   //monopoly_board(0,-0.1,0, 25,0.01,25, 0);
    // draw vertices
    int i;
    for (i = 0; i < num_vertices; i++){
@@ -428,8 +427,6 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key);
    glutIdleFunc(idle);
 
-   board = LoadTexBMP("monopoly_board.bmp");
-   marble = LoadTexBMP("marble.bmp");
    glutTimerFunc(1000, timerFunc, 0);
    glutTimerFunc(1, rotate_scene, 0);
    //  Pass control to GLUT so it can interact with the user
