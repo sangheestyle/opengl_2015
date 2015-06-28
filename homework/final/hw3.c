@@ -27,11 +27,26 @@ float shinyvec[1];    // Shininess (value)
 unsigned int texture[6]; // dice
 unsigned int board;
 unsigned int marble;
-unsigned int head,tail,edge;  //  Textures
-unsigned int nickel_head,nickel_tail,nickel_edge;  //  Textures
 
 int ntex=0;
 int mode=0;
+
+const int num_vertices = 5;
+int vertices[num_vertices][4] = {
+  {4, 0, 4, 1},
+  {4, 0, 6, 1},
+  {6, 0, 4, 2},
+  {6, 0, 6, 2},
+  {5, 0, 5, 5}
+};
+
+const int num_edges = 4;
+int edges[num_edges][2] = {
+  {0, 4},
+  {1, 4},
+  {2, 4},
+  {3, 4},
+};
 
 /*
  *  Draw a ball
@@ -130,13 +145,31 @@ static void monopoly_board(double x,double y,double z,
    glDisable(GL_TEXTURE_2D);
 }
 
+
+static void edge(double bx, double by, double bz,
+                 double ex, double ey, double ez,
+                 double r)
+{
+   double d = (1.0/32) * (2*M_PI);
+
+   glBegin(GL_QUAD_STRIP);
+   glColor3f(0.8f,0.4f,0.2f);
+   for (int i = 0; i <= 32; i++) {
+       // Generate a pair of points, on top and bottom of the strip.
+       glNormal3d(cos(d*i), sin(d*i), 0);  // Normal for BOTH points.
+       glVertex3d(bx+r*cos(d*i), by+r*sin(d*i), bz); // Begin
+       glVertex3d(ex+r*cos(d*i), ey+r*sin(d*i), ez); // End
+   }
+   glEnd();
+}
+
 /*
- *  Draw a dice
+ *  Draw a vertex
  *     at (x,y,z)
  *     dimentions (dx,dy,dz)
  *     rotated th about the y axis
  */
-static void dice(double x,double y,double z,
+static void vertex(double x,double y,double z,
                  double dx,double dy,double dz,
                  double th)
 {
@@ -147,10 +180,10 @@ static void dice(double x,double y,double z,
    glRotated(th,0,1,0);
    glScaled(dx,dy,dz);
    //  Enable textures
-   glEnable(GL_TEXTURE_2D);
+   //glEnable(GL_TEXTURE_2D);
    glColor3f(1,1,1);
    //  Front
-   glBindTexture(GL_TEXTURE_2D,texture[0]);
+   //glBindTexture(GL_TEXTURE_2D,texture[0]);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0, 1);
    glTexCoord2f(0,0); glVertex3f(-1,-1, 1);
@@ -159,7 +192,7 @@ static void dice(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+1, 1);
    glEnd();
    //  Back
-   glBindTexture(GL_TEXTURE_2D,texture[1]);
+   //glBindTexture(GL_TEXTURE_2D,texture[1]);
    glBegin(GL_QUADS);
    glNormal3f( 0, 0,-1);
    glTexCoord2f(0,0); glVertex3f(+1,-1,-1);
@@ -168,7 +201,7 @@ static void dice(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+1,-1);
    glEnd();
    //  Right
-   glBindTexture(GL_TEXTURE_2D,texture[2]);
+   //glBindTexture(GL_TEXTURE_2D,texture[2]);
    glBegin(GL_QUADS);
    glNormal3f(+1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(+1,-1,+1);
@@ -177,7 +210,7 @@ static void dice(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(+1,+1,+1);
    glEnd();
    //  Left
-   glBindTexture(GL_TEXTURE_2D,texture[3]);
+   //glBindTexture(GL_TEXTURE_2D,texture[3]);
    glBegin(GL_QUADS);
    glNormal3f(-1, 0, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
@@ -186,7 +219,7 @@ static void dice(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
    glEnd();
    //  Top
-   glBindTexture(GL_TEXTURE_2D,texture[4]);
+   //glBindTexture(GL_TEXTURE_2D,texture[4]);
    glBegin(GL_QUADS);
    glNormal3f( 0,+1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,+1,+1);
@@ -195,7 +228,7 @@ static void dice(double x,double y,double z,
    glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
    glEnd();
    //  Bottom
-   glBindTexture(GL_TEXTURE_2D,texture[5]);
+   //glBindTexture(GL_TEXTURE_2D,texture[5]);
    glBegin(GL_QUADS);
    glNormal3f( 0,-1, 0);
    glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
@@ -205,101 +238,6 @@ static void dice(double x,double y,double z,
    glEnd();
    //  Undo transformations and textures
    glPopMatrix();
-   glDisable(GL_TEXTURE_2D);
-}
-
-/*
- *  Draw a coin at (x,y,z) radius r thickness 2d
- *  The resolution is fixed at 36 slices (10 degrees each)
- */
-static void coin(double x,double y,double z,double r,double d, int sa, int xr)
-{
-   int i,k;
-   glEnable(GL_TEXTURE_2D);
-   //  Save transformation
-   glPushMatrix();
-   //  Offset and scale
-   glTranslated(x,y,z);
-   glRotated(sa,0,1,0);
-   glRotated(xr,1,0,0);
-   glScaled(r,r,d);
-   //  Head & Tail
-   glColor3f(1,1,1);
-   for (i=1;i>=-1;i-=2)
-   {
-      glBindTexture(GL_TEXTURE_2D,i>0?tail:head);
-      glNormal3f(0,0,i);
-      glBegin(GL_TRIANGLE_FAN);
-      glTexCoord2f(0.5,0.5);
-      glVertex3f(0,0,i);
-      for (k=0;k<=360;k+=10)
-      {
-         glTexCoord2f(0.5*Cos(k)+0.5,0.5*Sin(k)+0.5);
-         glVertex3f(i*Cos(k),Sin(k),i);
-      }
-      glEnd();
-   }
-   //  Edge
-   glBindTexture(GL_TEXTURE_2D,edge);
-   glColor3f(1.00,0.77,0.36);
-   glBegin(GL_QUAD_STRIP);
-   for (k=0;k<=360;k+=10)
-   {
-      glNormal3f(Cos(k),Sin(k),0);
-      glTexCoord2f(0,0.5*k); glVertex3f(Cos(k),Sin(k),+1);
-      glTexCoord2f(1,0.5*k); glVertex3f(Cos(k),Sin(k),-1);
-   }
-   glEnd();
-   //  Undo transformations
-   glPopMatrix();
-   glDisable(GL_TEXTURE_2D);
-}
-
-/*
- *  Draw a nickel coin at (x,y,z) radius r thickness 2d
- *  The resolution is fixed at 36 slices (10 degrees each)
- */
-static void nickel(double x,double y,double z,double r,double d, int sa, int xr)
-{
-   int i,k;
-   glEnable(GL_TEXTURE_2D);
-   //  Save transformation
-   glPushMatrix();
-   //  Offset and scale
-   glTranslated(x,y,z);
-   glRotated(sa,0,1,0);
-   glRotated(xr,1,0,0);
-   glScaled(r,r,d);
-   //  Head & Tail
-   glColor3f(1,1,1);
-   for (i=1;i>=-1;i-=2)
-   {
-      glBindTexture(GL_TEXTURE_2D,i>0?nickel_tail:nickel_head);
-      glNormal3f(0,0,i);
-      glBegin(GL_TRIANGLE_FAN);
-      glTexCoord2f(0.5,0.5);
-      glVertex3f(0,0,i);
-      for (k=0;k<=360;k+=10)
-      {
-         glTexCoord2f(0.5*Cos(k)+0.5,0.5*Sin(k)+0.5);
-         glVertex3f(i*Cos(k),Sin(k),i);
-      }
-      glEnd();
-   }
-   //  Edge
-   glBindTexture(GL_TEXTURE_2D,nickel_edge);
-   glColor3f(1,1,1);
-   glBegin(GL_QUAD_STRIP);
-   for (k=0;k<=360;k+=10)
-   {
-      glNormal3f(Cos(k),Sin(k),0);
-      glTexCoord2f(0,0.5*k); glVertex3f(Cos(k),Sin(k),+1);
-      glTexCoord2f(1,0.5*k); glVertex3f(Cos(k),Sin(k),-1);
-   }
-   glEnd();
-   //  Undo transformations
-   glPopMatrix();
-   glDisable(GL_TEXTURE_2D);
 }
 
 /*
@@ -350,15 +288,21 @@ void display()
    else
       glDisable(GL_LIGHTING);
 
-   // Draw scene
-   coin(-1.5,2,1,  2,0.1,spin*30, 0);
-   coin(-2,0.1,  -5,2,0.1,0,   90);
-   nickel(4,1,-4,  1,0.1,30,    0);
-   nickel(3,0.1,-6,  1,0.1,30,   270);
-   nickel(2,0.1,-3,  1,0.1,30,   90);
-   dice(2.5,1,1.5,   1.0,1.0,1.0,   0);
-   dice(5.0,1,2.5, 1.0,1.0,1.0, 180);
-   monopoly_board(0,-0.1,0, 25,0.01,25, 0);
+   //monopoly_board(0,-0.1,0, 25,0.01,25, 0);
+   // draw vertices
+   int i;
+   for (i = 0; i < num_vertices; i++)
+     vertex(vertices[i][0],vertices[i][1],vertices[i][2],
+            0.3,vertices[i][3]*0.3,0.3, 0);
+
+   // draw edges
+   for (i = 0; i < num_edges; i++) {
+     int begin = edges[i][0];
+     int end = edges[i][1];
+     edge(vertices[begin][0], vertices[begin][1], vertices[begin][2],
+          vertices[end][0], vertices[end][1], vertices[end][2],
+          0.1);
+   }
 
    //  Draw axes
    glDisable(GL_LIGHTING);
@@ -489,6 +433,8 @@ void timerFunc()
 {
   spin += 1;
   spin %= 360;
+  //th += 1;
+  //th %= 360;
   glutTimerFunc(1, timerFunc, 0);
 }
 
@@ -509,13 +455,7 @@ int main(int argc,char* argv[])
    glutSpecialFunc(special);
    glutKeyboardFunc(key);
    glutIdleFunc(idle);
-   //  Load textures
-   head = LoadTexBMP("head.bmp");
-   tail = LoadTexBMP("tail.bmp");
-   edge = LoadTexBMP("edge.bmp");
-   nickel_head = LoadTexBMP("nickel_head.bmp");
-   nickel_tail = LoadTexBMP("nickel_tail.bmp");
-   nickel_edge = LoadTexBMP("edge.bmp");
+
    texture[0] = LoadTexBMP("dice_front.bmp");
    texture[1] = LoadTexBMP("dice_back.bmp");
    texture[2] = LoadTexBMP("dice_left.bmp");
