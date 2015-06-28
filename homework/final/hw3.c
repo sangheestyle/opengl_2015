@@ -32,23 +32,13 @@ int ntex=0;
 int mode=0;
 
 const int num_vertices = 5;
-int vertices[num_vertices][4] = {
-  {4, 0, 4, 0},
-  {4, 0, 6, 0},
-  {6, 0, 4, 0},
-  {6, 0, 6, 0},
-  {5, 0, 5, 0}
-};
+const int num_vertex_properties = 4;
+int vertices[num_vertices][num_vertex_properties];
 
 // TODO: workaround for Bus error: 10
 const int num_edges = 5;
-int edges[num_edges][2] = {
-  {0, 4},
-  {1, 4},
-  {2, 4},
-  {3, 4},
-};
-
+const int num_edge_properties = 2;
+int edges[num_edges][num_vertex_properties];
 int edge_counter = 0;
 
 /*
@@ -378,11 +368,49 @@ void timerFunc()
   glutTimerFunc(500, timerFunc, 0);
 }
 
+const char* getfield(char* line, int num)
+{
+    const char* tok;
+    for (tok = strtok(line, ","); tok && *tok; tok = strtok(NULL, ",\n"))
+    {
+      if (!--num)
+        return tok;
+    }
+    return NULL;
+}
+
 /*
  *  Start up GLUT and tell it what to do
  */
 int main(int argc,char* argv[])
 {
+    FILE* e_stream = fopen("edges.csv", "r");
+    char line[1024];
+    int counter = 0;
+    while (fgets(line, 1024, e_stream))
+    {
+      int i;
+      for (i = 0; i < num_edge_properties; i++) {
+        char* tmp = strdup(line);
+        edges[counter][i] = atoi(getfield(tmp, i+1));
+        free(tmp);
+      }
+      counter++;
+    }
+
+    FILE* v_stream = fopen("vertices.csv", "r");
+    counter = 0;
+    while (fgets(line, 1024, v_stream))
+    {
+      int i;
+      for (i = 0; i < num_vertex_properties; i++) {
+        char* tmp = strdup(line);
+        vertices[counter][i] = atoi(getfield(tmp, i+1));
+        free(tmp);
+      }
+      counter++;
+    }
+
    //  Initialize GLUT
    glutInit(&argc,argv);
    //  Request double buffered, true color window with Z buffering at 600x600
