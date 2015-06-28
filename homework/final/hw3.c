@@ -456,12 +456,6 @@ int main(int argc,char* argv[])
    glutKeyboardFunc(key);
    glutIdleFunc(idle);
 
-   texture[0] = LoadTexBMP("dice_front.bmp");
-   texture[1] = LoadTexBMP("dice_back.bmp");
-   texture[2] = LoadTexBMP("dice_left.bmp");
-   texture[3] = LoadTexBMP("dice_right.bmp");
-   texture[4] = LoadTexBMP("dice_top.bmp");
-   texture[5] = LoadTexBMP("dice_bottom.bmp");
    board = LoadTexBMP("monopoly_board.bmp");
    marble = LoadTexBMP("marble.bmp");
    //  Pass control to GLUT so it can interact with the user
