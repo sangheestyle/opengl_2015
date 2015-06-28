@@ -31,12 +31,12 @@ unsigned int marble;
 int ntex=0;
 int mode=0;
 
-const int num_vertices = 5;
+const int num_vertices = 9;
 const int num_vertex_properties = 4;
 int vertices[num_vertices][num_vertex_properties];
 
 // TODO: workaround for Bus error: 10
-const int num_edges = 5;
+const int num_edges = 9;
 const int num_edge_properties = 2;
 int edges[num_edges][num_vertex_properties];
 int edge_counter = 0;
@@ -220,7 +220,7 @@ void display()
      int end = edges[i][1];
      edge(vertices[begin][0], vertices[begin][1], vertices[begin][2],
           vertices[end][0], vertices[end][1], vertices[end][2],
-          0.1);
+          0.05);
    }
 
    //  Draw axes
@@ -365,7 +365,7 @@ void animate_graph()
 void timerFunc()
 {
   animate_graph();
-  glutTimerFunc(500, timerFunc, 0);
+  glutTimerFunc(1000, timerFunc, 0);
 }
 
 const char* getfield(char* line, int num)
@@ -426,7 +426,7 @@ int main(int argc,char* argv[])
 
    board = LoadTexBMP("monopoly_board.bmp");
    marble = LoadTexBMP("marble.bmp");
-   glutTimerFunc(500, timerFunc, 0);
+   glutTimerFunc(1000, timerFunc, 0);
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutMainLoop();
