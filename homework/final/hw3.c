@@ -40,7 +40,8 @@ int vertices[num_vertices][4] = {
   {5, 0, 5, 0}
 };
 
-const int num_edges = 4;
+// TODO: workaround for Bus error: 10
+const int num_edges = 5;
 int edges[num_edges][2] = {
   {0, 4},
   {1, 4},
@@ -217,9 +218,11 @@ void display()
    //monopoly_board(0,-0.1,0, 25,0.01,25, 0);
    // draw vertices
    int i;
-   for (i = 0; i < num_vertices; i++)
+   for (i = 0; i < num_vertices; i++){
+     if (vertices[i][3] != 0)
      vertex(vertices[i][0],vertices[i][1],vertices[i][2],
             0.3,vertices[i][3]*0.3,0.3, 0);
+   }
 
    // draw edges
    for (i = 0; i < edge_counter; i++) {
@@ -351,16 +354,28 @@ void reshape(int width,int height)
    Project(fov,asp,dim);
 }
 
+void animate_graph()
+{
+  vertices[edges[edge_counter][0]][3]++;
+  vertices[edges[edge_counter][1]][3]++;
+  edge_counter += 1;
+
+  if (edge_counter >= num_edges) {
+    int i;
+    for (i = 0; i < num_vertices; i++) {
+      vertices[i][3] = 0;
+    }
+    edge_counter = 0;
+  }
+}
 
 /*
  * Calc rotation
  */
 void timerFunc()
 {
-
-  edge_counter += 1;
-  edge_counter %= num_edges+1;
-  glutTimerFunc(1000, timerFunc, 0);
+  animate_graph();
+  glutTimerFunc(500, timerFunc, 0);
 }
 
 /*
@@ -383,9 +398,9 @@ int main(int argc,char* argv[])
 
    board = LoadTexBMP("monopoly_board.bmp");
    marble = LoadTexBMP("marble.bmp");
+   glutTimerFunc(500, timerFunc, 0);
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
-   glutTimerFunc(1000, timerFunc, 0);
    glutMainLoop();
    return 0;
 }
