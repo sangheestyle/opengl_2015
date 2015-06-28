@@ -151,6 +151,8 @@ static void edge(double bx, double by, double bz,
                  double r)
 {
    double d = (1.0/32) * (2*M_PI);
+   by += 0.1;
+   ey += 0.1;
 
    glBegin(GL_QUAD_STRIP);
    glColor3f(0.8f,0.4f,0.2f);
@@ -176,7 +178,7 @@ static void vertex(double x,double y,double z,
    //  Save transformation
    glPushMatrix();
    //  Offset, scale and rotate
-   glTranslated(x,y,z);
+   glTranslated(x,y+dy,z);
    glRotated(th,0,1,0);
    glScaled(dx,dy,dz);
    //  Enable textures
