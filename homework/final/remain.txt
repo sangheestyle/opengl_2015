@@ -1,0 +1,6 @@
+What remains to be done
+
+a. Vertex needs to be more complex object such as big wizard for more
+   important one and something smaller one for less important one.
+b. All the objects have to have texture.
+c. Show more complex graph.
