@@ -359,9 +359,13 @@ void animate_graph()
   }
 }
 
-/*
- * Calc rotation
- */
+void rotate_scene()
+{
+  th += 1;
+  th %= 360;
+  glutTimerFunc(1,rotate_scene, 0);
+}
+
 void timerFunc()
 {
   animate_graph();
@@ -427,6 +431,7 @@ int main(int argc,char* argv[])
    board = LoadTexBMP("monopoly_board.bmp");
    marble = LoadTexBMP("marble.bmp");
    glutTimerFunc(1000, timerFunc, 0);
+   glutTimerFunc(1, rotate_scene, 0);
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutMainLoop();
