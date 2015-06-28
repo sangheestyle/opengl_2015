@@ -33,11 +33,11 @@ int mode=0;
 
 const int num_vertices = 5;
 int vertices[num_vertices][4] = {
-  {4, 0, 4, 1},
-  {4, 0, 6, 1},
-  {6, 0, 4, 2},
-  {6, 0, 6, 2},
-  {5, 0, 5, 5}
+  {4, 0, 4, 0},
+  {4, 0, 6, 0},
+  {6, 0, 4, 0},
+  {6, 0, 6, 0},
+  {5, 0, 5, 0}
 };
 
 const int num_edges = 4;
@@ -47,6 +47,8 @@ int edges[num_edges][2] = {
   {2, 4},
   {3, 4},
 };
+
+int edge_counter = 0;
 
 /*
  *  Draw a ball
@@ -298,7 +300,7 @@ void display()
             0.3,vertices[i][3]*0.3,0.3, 0);
 
    // draw edges
-   for (i = 0; i < num_edges; i++) {
+   for (i = 0; i < edge_counter; i++) {
      int begin = edges[i][0];
      int end = edges[i][1];
      edge(vertices[begin][0], vertices[begin][1], vertices[begin][2],
@@ -433,11 +435,10 @@ void reshape(int width,int height)
  */
 void timerFunc()
 {
-  spin += 1;
-  spin %= 360;
-  //th += 1;
-  //th %= 360;
-  glutTimerFunc(1, timerFunc, 0);
+
+  edge_counter += 1;
+  edge_counter %= num_edges+1;
+  glutTimerFunc(1000, timerFunc, 0);
 }
 
 /*
@@ -462,7 +463,7 @@ int main(int argc,char* argv[])
    marble = LoadTexBMP("marble.bmp");
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
-   glutTimerFunc(1, timerFunc, 0);
+   glutTimerFunc(1000, timerFunc, 0);
    glutMainLoop();
    return 0;
 }
