@@ -31,12 +31,12 @@ unsigned int marble;
 int ntex=0;
 int mode=0;
 
-const int num_vertices = 9;
+const int num_vertices = 13;
 const int num_vertex_properties = 4;
 int vertices[num_vertices][num_vertex_properties];
 
 // TODO: workaround for Bus error: 10
-const int num_edges = 9;
+const int num_edges = 21;
 const int num_edge_properties = 2;
 int edges[num_edges][num_vertex_properties];
 int edge_counter = 0;
