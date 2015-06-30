@@ -41,6 +41,8 @@ const int num_edge_properties = 2;
 int edges[num_edges][num_vertex_properties];
 int edge_counter = 0;
 
+int obj;
+
 /*
  *  Draw a ball
  *     at (x,y,z)
@@ -204,6 +206,11 @@ void display()
    }
    else
       glDisable(GL_LIGHTING);
+
+   glPushMatrix();
+   glScaled(1,1,1);
+   glCallList(obj);
+   glPopMatrix();
 
    // draw vertices
    int i;
@@ -429,6 +436,7 @@ int main(int argc,char* argv[])
 
    glutTimerFunc(1000, timerFunc, 0);
    glutTimerFunc(1, rotate_scene, 0);
+   obj = LoadOBJ(argv[1]);
    //  Pass control to GLUT so it can interact with the user
    ErrCheck("init");
    glutMainLoop();
