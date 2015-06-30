@@ -159,6 +159,21 @@ static void vertex(double x,double y,double z,
    glPopMatrix();
 }
 
+static void cowboy(double x,double y,double z,
+                   double dx,double dy,double dz,
+                   double th)
+{
+   //  Save transformation
+   glPushMatrix();
+   //  Offset, scale and rotate
+   glTranslated(x,y+dy,z);
+   glRotated(th,0,1,0);
+   glScaled(dx,dy,dz);
+   glCallList(obj);
+   glPopMatrix();
+}
+
+
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
  */
@@ -207,17 +222,22 @@ void display()
    else
       glDisable(GL_LIGHTING);
 
-   glPushMatrix();
-   glScaled(1,1,1);
-   glCallList(obj);
-   glPopMatrix();
-
    // draw vertices
    int i;
    for (i = 0; i < num_vertices; i++){
-     if (vertices[i][3] != 0)
-     vertex(vertices[i][0],vertices[i][1],vertices[i][2],
-            0.3,vertices[i][3]*0.3,0.3, 0);
+     int point = vertices[i][3];
+     if (point == 0) {
+       continue;
+     } else if (point > 3) {
+       double size = 0.15 + (point*0.01);
+       cowboy(vertices[i][0],size*2+1,vertices[i][2],
+              size, size, size,
+              0);
+     } else {
+       vertex(vertices[i][0],vertices[i][1],vertices[i][2],
+              0.2,point*0.2,0.2,
+              0);
+     }
    }
 
    // draw edges
