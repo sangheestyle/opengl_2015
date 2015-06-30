@@ -25,10 +25,6 @@ int specular  =   0;  // Specular intensity (%)
 int shininess =   0;  // Shininess (power of two)
 float shinyvec[1];    // Shininess (value)
 
-// Texture
-unsigned int texture[6]; // dice
-unsigned int board;
-unsigned int marble;
 
 int ntex=0;
 int mode=0;
@@ -45,6 +41,9 @@ int edge_counter = 0;
 
 int obj;
 double leaves_colors[10];
+
+// Texture
+unsigned int grass_texture;
 
 // Header on mac has M_PI otherwise don't
 #ifndef M_PI
@@ -151,53 +150,70 @@ static void land(double x, double y, double z,
 {
    //  Save transformation
    glPushMatrix();
-   //  Offset
-   glTranslated(x,y,z);
+   //  Offset, scale and rotate
+   glTranslated(x,y+dy,z);
    glRotated(th,0,1,0);
    glScaled(dx,dy,dz);
-   //  Cube
-   glBegin(GL_QUADS);
+   //  Enable textures
+   glEnable(GL_TEXTURE_2D);
+   glColor3f(1,1,1);
    //  Front
-   glColor3f(1.0f,0.7f,0.4f);
-   glVertex3f(-1,-1, 1);
-   glVertex3f(+1,-1, 1);
-   glVertex3f(+1,+1, 1);
-   glVertex3f(-1,+1, 1);
-   //  Back
-   glColor3f(1.0f,0.7f,0.4f);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(-1,+1,-1);
-   glVertex3f(+1,+1,-1);
-   //  Right
-   glColor3f(0.9f,0.7f,0.4f);
-   glVertex3f(+1,-1,+1);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(+1,+1,-1);
-   glVertex3f(+1,+1,+1);
-   //  Left
-   glColor3f(0.9f,0.7f,0.4f);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(-1,-1,+1);
-   glVertex3f(-1,+1,+1);
-   glVertex3f(-1,+1,-1);
-
-   //  Top
-   glColor3f(0.745f,0.87f,0.420f);
-   glVertex3f(-1,+1,+1);
-   glVertex3f(+1,+1,+1);
-   glVertex3f(+1,+1,-1);
-   glVertex3f(-1,+1,-1);
-   //  Bottom
-   glColor3f(0.93f,0.63f,0.4f);
-   glVertex3f(-1,-1,-1);
-   glVertex3f(+1,-1,-1);
-   glVertex3f(+1,-1,+1);
-   glVertex3f(-1,-1,+1);
-   //  End
+   //glBindTexture(GL_TEXTURE_2D,texture[0]);
+   glBegin(GL_QUADS);
+   glNormal3f( 0, 0, 1);
+   glTexCoord2f(0,0); glVertex3f(-1,-1, 1);
+   glTexCoord2f(1,0); glVertex3f(+1,-1, 1);
+   glTexCoord2f(1,1); glVertex3f(+1,+1, 1);
+   glTexCoord2f(0,1); glVertex3f(-1,+1, 1);
    glEnd();
-   //  Undo transofrmations
+   //  Back
+   //glBindTexture(GL_TEXTURE_2D,texture[1]);
+   glBegin(GL_QUADS);
+   glNormal3f( 0, 0,-1);
+   glTexCoord2f(0,0); glVertex3f(+1,-1,-1);
+   glTexCoord2f(1,0); glVertex3f(-1,-1,-1);
+   glTexCoord2f(1,1); glVertex3f(-1,+1,-1);
+   glTexCoord2f(0,1); glVertex3f(+1,+1,-1);
+   glEnd();
+   //  Right
+   //glBindTexture(GL_TEXTURE_2D,texture[2]);
+   glBegin(GL_QUADS);
+   glNormal3f(+1, 0, 0);
+   glTexCoord2f(0,0); glVertex3f(+1,-1,+1);
+   glTexCoord2f(1,0); glVertex3f(+1,-1,-1);
+   glTexCoord2f(1,1); glVertex3f(+1,+1,-1);
+   glTexCoord2f(0,1); glVertex3f(+1,+1,+1);
+   glEnd();
+   //  Left
+   //glBindTexture(GL_TEXTURE_2D,texture[3]);
+   glBegin(GL_QUADS);
+   glNormal3f(-1, 0, 0);
+   glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
+   glTexCoord2f(1,0); glVertex3f(-1,-1,+1);
+   glTexCoord2f(1,1); glVertex3f(-1,+1,+1);
+   glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
+   glEnd();
+   //  Top
+   glBindTexture(GL_TEXTURE_2D,grass_texture);
+   glBegin(GL_QUADS);
+   glNormal3f( 0,+1, 0);
+   glTexCoord2f(0,0); glVertex3f(-1,+1,+1);
+   glTexCoord2f(1,0); glVertex3f(+1,+1,+1);
+   glTexCoord2f(1,1); glVertex3f(+1,+1,-1);
+   glTexCoord2f(0,1); glVertex3f(-1,+1,-1);
+   glEnd();
+   //  Bottom
+   //glBindTexture(GL_TEXTURE_2D,texture[5]);
+   glBegin(GL_QUADS);
+   glNormal3f( 0,-1, 0);
+   glTexCoord2f(0,0); glVertex3f(-1,-1,-1);
+   glTexCoord2f(1,0); glVertex3f(+1,-1,-1);
+   glTexCoord2f(1,1); glVertex3f(+1,-1,+1);
+   glTexCoord2f(0,1); glVertex3f(-1,-1,+1);
+   glEnd();
+   //  Undo transformations and textures
    glPopMatrix();
+   glDisable(GL_TEXTURE_2D);
 }
 
 /*
@@ -407,7 +423,7 @@ void display()
           0.05);
    }
 
-   land(0,-0.2f,0, 12,0.2,12, 0);
+   land(0,-0.3f,0, 12,0.2,12, 0);
    float e = edge_counter*0.02 + 1;
    // x,y,z, dx,dy,dz,th, th,tr,lh,lr, green, type
    tree(8,0,11.5, e*1,e*1,e*1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
@@ -630,6 +646,7 @@ int main(int argc,char* argv[])
    glutSpecialFunc(special);
    glutKeyboardFunc(key);
    glutIdleFunc(idle);
+   grass_texture = LoadTexBMP("grass.bmp");
 
    glutTimerFunc(1000, timerFunc, 0);
    glutTimerFunc(1, rotate_scene, 0);
