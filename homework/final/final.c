@@ -2,6 +2,8 @@
  * Homework 3
  */
 #include <time.h>
+#include <stdio.h>
+#include <math.h>
 #include "CSCIx229.h"
 int axes=0;       //  Display axes
 int th=-20;         //  Azimuth of view angle
@@ -42,6 +44,161 @@ int edges[num_edges][num_vertex_properties];
 int edge_counter = 0;
 
 int obj;
+double leaves_colors[10];
+
+// Header on mac has M_PI otherwise don't
+#ifndef M_PI
+  #define M_PI 3.14159265358979323846
+#endif
+
+/*
+ *  Draw a tree
+ *     at (x,y,z)
+ *     dimentions (dx,dy,dz)
+ *     rotated th about the x axis
+ *     trunk height and round (trunk_h, trunk_r)
+ *     leaves height and round (leaves_h, leaves_r)
+ *     type (type)
+ */
+static void tree(double x,double y,double z,
+                 double dx,double dy,double dz,
+                 double th,
+                 double trunk_h, double trunk_r,
+                 double leaves_h, double leaves_r,
+                 double green_depth,
+                 int type)
+{
+   //  Save transformation
+   glPushMatrix();
+   //  Offset
+   glTranslated(x,y,z);
+   glRotated(th,1,0,0);
+   glScaled(dx,dy,dz);
+
+   double d = (1.0/32) * (2*M_PI);
+
+   // Draw Trunk
+   glBegin(GL_QUAD_STRIP);
+   glColor3f(0.8f,0.4f,0.2f);
+   for (int i = 0; i <= 32; i++) {
+       // Generate a pair of points, on top and bottom of the strip.
+       glNormal3d( cos(d*i), 0, sin(d*i));  // Normal for BOTH points.
+       glVertex3d( trunk_r*cos(d*i), trunk_h, trunk_r*sin(d*i));  // Top point.
+       glVertex3d( trunk_r*cos(d*i), 0, trunk_r*sin(d*i));  // Bottom point.
+   }
+   glEnd();
+
+   // Draw Leaves (Side)
+   glBegin(GL_QUAD_STRIP);
+   glColor3f(0,green_depth,0);
+   for (int i = 0; i <= 32; i++) {
+       glNormal3d( cos(d*i), leaves_h, sin(d*i));
+       // Type 2: Upside narrow
+       if (type == 2)
+         glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h+leaves_h,
+                     leaves_r*0.5f*sin(d*i));
+       // Type 4: Cone style
+       else if (type == 4)
+         glVertex3d( 0, trunk_h+leaves_h, 0);
+       else
+         glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
+                     leaves_r*sin(d*i));
+
+       if (type == 3)
+         glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h, leaves_r*0.5f*sin(d*i));
+       else
+         glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
+   }
+   glEnd();
+
+   // Type 4, Cone, does not need to draw top of leaves
+   if (type != 4) {
+       // Draw Leaves (Top)
+       glBegin(GL_POLYGON);
+       glColor3f(0,green_depth-0.1f,0);
+       for (int i = 0; i <= 32; i++) {
+           // Type 2: Upside narrow
+           if (type == 2)
+               glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h+leaves_h,
+                           leaves_r*0.5f*sin(d*i));
+           else
+               glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
+                           leaves_r*sin(d*i));  // Top point.
+       }
+      glEnd();
+   }
+
+   // Draw Leaves (Bottom)
+   glBegin(GL_POLYGON);
+   glColor3f(0,green_depth+0.1f,0);
+   for (int i = 0; i <= 32; i++) {
+       // Type 2: Upside narrow
+       if (type == 3)
+           glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h,
+                       leaves_r*0.5f*sin(d*i));
+       else
+           glVertex3d( leaves_r*cos(d*i), trunk_h, leaves_r*sin(d*i));
+   }
+   glEnd();
+
+   //  Undo transofrmations
+   glPopMatrix();
+}
+
+static void land(double x, double y, double z,
+                 double dx, double dy, double dz,
+                 double th)
+{
+   //  Save transformation
+   glPushMatrix();
+   //  Offset
+   glTranslated(x,y,z);
+   glRotated(th,0,1,0);
+   glScaled(dx,dy,dz);
+   //  Cube
+   glBegin(GL_QUADS);
+   //  Front
+   glColor3f(1.0f,0.7f,0.4f);
+   glVertex3f(-1,-1, 1);
+   glVertex3f(+1,-1, 1);
+   glVertex3f(+1,+1, 1);
+   glVertex3f(-1,+1, 1);
+   //  Back
+   glColor3f(1.0f,0.7f,0.4f);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(-1,+1,-1);
+   glVertex3f(+1,+1,-1);
+   //  Right
+   glColor3f(0.9f,0.7f,0.4f);
+   glVertex3f(+1,-1,+1);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(+1,+1,-1);
+   glVertex3f(+1,+1,+1);
+   //  Left
+   glColor3f(0.9f,0.7f,0.4f);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(-1,-1,+1);
+   glVertex3f(-1,+1,+1);
+   glVertex3f(-1,+1,-1);
+
+   //  Top
+   glColor3f(0.745f,0.87f,0.420f);
+   glVertex3f(-1,+1,+1);
+   glVertex3f(+1,+1,+1);
+   glVertex3f(+1,+1,-1);
+   glVertex3f(-1,+1,-1);
+   //  Bottom
+   glColor3f(0.93f,0.63f,0.4f);
+   glVertex3f(-1,-1,-1);
+   glVertex3f(+1,-1,-1);
+   glVertex3f(+1,-1,+1);
+   glVertex3f(-1,-1,+1);
+   //  End
+   glEnd();
+   //  Undo transofrmations
+   glPopMatrix();
+}
 
 /*
  *  Draw a ball
@@ -187,7 +344,8 @@ void display()
    glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
    //  Enable Z-buffering in OpenGL
    glEnable(GL_DEPTH_TEST);
-   glEnable(GL_CULL_FACE);
+   glDepthMask(GL_TRUE);
+   // glEnable(GL_CULL_FACE);
    //  Undo previous transformations
    glLoadIdentity();
    //  Perspective - set eye position
@@ -248,6 +406,9 @@ void display()
           vertices[end][0], vertices[end][1], vertices[end][2],
           0.05);
    }
+
+   land(0,-0.2f,0, 10,0.2,10, 0);
+   tree(8,0,8, 2,2,2, 0, 1,0.2,2.0,1.0, leaves_colors[0], 4);
 
    //  Draw axes
    glDisable(GL_LIGHTING);
@@ -442,6 +603,10 @@ int main(int argc,char* argv[])
       }
       counter++;
     }
+
+    srand(time(NULL));
+    for (int i =0; i <= 10; i++)
+      leaves_colors[i] = (rand()%(9-3) + 3)*0.1;
 
    //  Initialize GLUT
    glutInit(&argc,argv);
