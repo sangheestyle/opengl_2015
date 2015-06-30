@@ -272,7 +272,9 @@ void display()
    }
    //  Display parameters
    glWindowPos2i(5,5);
-   Print("Angle=%d,%d  Dim=%.1f Light=%s",th,ph,dim,light?"On":"Off");
+   //Print("Angle=%d,%d  Dim=%.1f Light=%s",th,ph,dim,light?"On":"Off");
+   Print("Developer %d and %d modified same files.",
+         edges[edge_counter][0], edges[edge_counter][1]);
    //  Render the scene and make it visible
    ErrCheck("display");
    glFlush();
