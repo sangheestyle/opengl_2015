@@ -610,34 +610,30 @@ const char* getfield(char* line, int num)
 }
 
 /*
+ * Read CSV file and store
+ */
+void readCSV(char* file_name, int num_cols, int store[][num_cols])
+{
+  FILE* e_stream = fopen(file_name, "r");
+  char line[1024];
+  int counter = 0;
+  while (fgets(line, 1024, e_stream)){
+    for (int i = 0; i < num_cols; i++) {
+      char* tmp = strdup(line);
+      store[counter][i] = atoi(getfield(tmp, i+1));
+      free(tmp);
+    }
+    counter++;
+  }
+}
+
+/*
  *  Start up GLUT and tell it what to do
  */
 int main(int argc,char* argv[])
 {
-  FILE* e_stream = fopen("edges.csv", "r");
-  char line[1024];
-  int counter = 0;
-  while (fgets(line, 1024, e_stream)){
-    int i;
-    for (i = 0; i < num_edge_properties; i++) {
-      char* tmp = strdup(line);
-      edges[counter][i] = atoi(getfield(tmp, i+1));
-      free(tmp);
-    }
-    counter++;
-  }
-
-  FILE* v_stream = fopen("vertices.csv", "r");
-  counter = 0;
-  while (fgets(line, 1024, v_stream)){
-    int i;
-    for (i = 0; i < num_vertex_properties; i++) {
-      char* tmp = strdup(line);
-      vertices[counter][i] = atoi(getfield(tmp, i+1));
-      free(tmp);
-    }
-    counter++;
-  }
+  readCSV("vertices.csv", num_vertex_properties, vertices);
+  readCSV("edges.csv", num_edge_properties, edges);
 
   srand(time(NULL));
   for (int i =0; i <= 10; i++)
