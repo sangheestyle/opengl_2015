@@ -6,7 +6,7 @@
 #include <math.h>
 #include "CSCIx229.h"
 int axes=0;       //  Display axes
-int th=-20;         //  Azimuth of view angle
+float th=-20.0;         //  Azimuth of view angle
 int ph=40;         //  Elevation of view angle
 int zh=0;         //  Azimuth of light
 int spin=0;
@@ -504,7 +504,7 @@ void special(int key,int x,int y)
    else if (key == GLUT_KEY_PAGE_UP && dim>1)
       dim -= 0.1;
    //  Keep angles to +/-360 degrees
-   th %= 360;
+   th = fmod(th, 360.0f);
    ph %= 360;
    //  Update projection
    Project(fov,asp,dim);
@@ -576,8 +576,8 @@ void animate_graph()
 
 void rotate_scene()
 {
-  th += 1;
-  th %= 360;
+  th += 0.5f;
+  th = fmod(th, 360.0f);
   glutTimerFunc(1,rotate_scene, 0);
 }
 
