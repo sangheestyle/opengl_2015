@@ -408,14 +408,15 @@ void display()
    }
 
    land(0,-0.2f,0, 10,0.2,10, 0);
+   float e = edge_counter*0.02 + 1;
    // x,y,z, dx,dy,dz,th, th,tr,lh,lr, green, type
-   tree(6,0,9.5, 1,1,1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
+   tree(6,0,9.5, e*1,e*1,e*1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
    tree(7,0,7, 1,1,1, 0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
-   tree(9,0,9, 1,1,1, 0, 1.3,0.2,1.5,1.0, leaves_colors[2], 3);
+   tree(9,0,9, 1,e*1,1, 0, 1.3,0.2,1.5,1.0, leaves_colors[2], 3);
 
-   tree(-7,0,-8,     1,1,1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
+   tree(-7,0,-8,     e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
    tree(-8,0,-6,     1,1,1,0, 1.4,0.1,1.8,0.8, leaves_colors[1], 1);
-   tree(-8.5,0,-4.0, 1,1,1,0, 1.1,0.3,1.7,0.5, leaves_colors[2], 2);
+   tree(-8.5,0,-4.0, e*1,e*1,e*1,0, 1.1,0.3,1.7,0.5, leaves_colors[2], 2);
    tree(-8,0,-1,     1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 3);
    tree(-7,0,-3,     1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 4);
 
