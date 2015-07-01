@@ -7,13 +7,13 @@
 #include "CSCIx229.h"
 
 int axes=0;       //  Display axes
+double dim=23;  //  Size of world
 float th=-20.0;   //  Azimuth of view angle
-int ph=40;        //  Elevation of view angle
+int ph=15;        //  Elevation of view angle
 int zh=0;         //  Azimuth of light
 int spin=0;       //  Spin speed
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
-double dim=13;  //  Size of world
 int light=1;      //  Lighting
 int move=1;       // Move light
 float ylight=5;   // Elevation of light
@@ -525,8 +525,9 @@ void display()
   //  Display parameters
   glWindowPos2i(5,5);
   //Print("Angle=%d,%d  Dim=%.1f Light=%s",th,ph,dim,light?"On":"Off");
-  Print("Developer %d and %d modified same files.",
-        edges[edge_counter][0], edges[edge_counter][1]);
+  Print("Angle=%.1f,%d  Dim=%.1f",th,ph,dim);
+  //Print("Developer %d and %d modified same files.",
+  //      edges[edge_counter][0], edges[edge_counter][1]);
   //  Render the scene and make it visible
   ErrCheck("display");
   glFlush();
