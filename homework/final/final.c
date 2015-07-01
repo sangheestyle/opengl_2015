@@ -27,14 +27,14 @@ int shininess =   0;  // Shininess (power of two)
 float shinyvec[1];    // Shininess (value)
 
 // Vertex and Edges
-const int num_vertices = 13;
+const int num_vertices = 30;
 const int num_vertex_properties = 4;
 int vertices[num_vertices][num_vertex_properties];
 
 // TODO: workaround for Bus error: 10
-const int num_edges = 21;
+const int num_edges = 42;
 const int num_edge_properties = 2;
-int edges[num_edges][num_vertex_properties];
+int edges[num_edges][num_edge_properties];
 int edge_counter = 0;
 
 // Cowboy
@@ -482,11 +482,11 @@ void display()
 
   // Draw edges
   for (i = 0; i < edge_counter; i++) {
-    int begin = edges[i][0];
-    int end = edges[i][1];
+    int begin = edges[i][0]-1;
+    int end = edges[i][1]-1;
     edge(vertices[begin][0], vertices[begin][1]-D, vertices[begin][2],
          vertices[end][0], vertices[end][1]-D, vertices[end][2],
-         0.05);
+         0.07);
   }
 
   float e = edge_counter*0.02 + 1;
@@ -525,9 +525,9 @@ void display()
   //  Display parameters
   glWindowPos2i(5,5);
   //Print("Angle=%d,%d  Dim=%.1f Light=%s",th,ph,dim,light?"On":"Off");
-  Print("Angle=%.1f,%d  Dim=%.1f",th,ph,dim);
-  //Print("Developer %d and %d modified same files.",
-  //      edges[edge_counter][0], edges[edge_counter][1]);
+  //Print("Angle=%.1f,%d  Dim=%.1f",th,ph,dim);
+  Print("Developer %d and %d modified same files. %d",
+        edges[edge_counter][0], edges[edge_counter][1], edge_counter);
   //  Render the scene and make it visible
   ErrCheck("display");
   glFlush();
@@ -631,8 +631,8 @@ void reshape(int width,int height)
  */
 void animate_graph()
 {
-  vertices[edges[edge_counter][0]][3]++;
-  vertices[edges[edge_counter][1]][3]++;
+  vertices[edges[edge_counter][0]-1][3]++;
+  vertices[edges[edge_counter][1]-1][3]++;
   edge_counter += 1;
 
   if (edge_counter >= num_edges) {
