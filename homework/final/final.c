@@ -54,6 +54,8 @@ int bg_texture[2];
 int box=1;
 float land_size=45;
 
+int prior = -1;
+int delta = 0;
 // Header on mac has M_PI otherwise don't
 #ifndef M_PI
   #define M_PI 3.14159265358979323846
@@ -504,7 +506,7 @@ void display()
   }
 
   // Draw edges
-  for (int i = 0; i < edge_counter; i++) {
+  for (int i = 0; i <= edge_counter; i++) {
     int begin = edges[i][0]-1;
     int end = edges[i][1]-1;
     edge(vertices[begin][0], vertices[begin][1]-D, vertices[begin][2],
@@ -671,15 +673,19 @@ void reshape(int width,int height)
  */
 void animate_graph()
 {
-  vertices[edges[edge_counter][0]-1][3]++;
-  vertices[edges[edge_counter][1]-1][3]++;
-  edge_counter += 1;
+  double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
+  edge_counter = fmod(t, num_edges);
+  //th = fmod(20*t,360.0);
+  if (prior != edge_counter) {
+    prior = edge_counter;
+    vertices[edges[edge_counter][0]-1][3]++;
+    vertices[edges[edge_counter][1]-1][3]++;
+  }
 
-  if (edge_counter >= num_edges) {
+  if (edge_counter == num_edges-1) {
     for (int i = 0; i < num_vertices; i++) {
       vertices[i][3] = 0;
     }
-    edge_counter = 0;
   }
 }
 
@@ -691,7 +697,7 @@ void timer_animate_graph()
 {
   if (growing_graph)
     animate_graph();
-  glutTimerFunc(1000, timer_animate_graph, 0);
+  glutTimerFunc(1, timer_animate_graph, 0);
 }
 
 /*
@@ -700,8 +706,12 @@ void timer_animate_graph()
 void timer_rotate_scene()
 {
   if (rotate) {
-    th += 0.5f;
-    th = fmod(th, 360.0f);
+    // fixed: The screen is crazy fast
+    //th += 0.5f;
+    //th = fmod(th, 360.0f);
+    //  Elapsed time in seconds
+    double t = glutGet(GLUT_ELAPSED_TIME)/1000.0;
+    th = fmod(20*t,360.0);
   }
   glutTimerFunc(1,timer_rotate_scene, 0);
 }
@@ -763,7 +773,7 @@ int main(int argc,char* argv[])
   bg_texture[0] = LoadTexBMP("background0.bmp");
   bg_texture[1] = LoadTexBMP("background1.bmp");
 
-  glutTimerFunc(1000, timer_animate_graph, 0);
+  glutTimerFunc(1, timer_animate_graph, 0);
   glutTimerFunc(1, timer_rotate_scene, 0);
   obj = LoadOBJ("cowboy.obj");
   //  Pass control to GLUT so it can interact with the user
