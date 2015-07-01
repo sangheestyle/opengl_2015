@@ -7,11 +7,12 @@
 #include "CSCIx229.h"
 
 int axes=0;       //  Display axes
-double dim=23;  //  Size of world
+double dim=23;    //  Size of world
 float th=-20.0;   //  Azimuth of view angle
 int ph=15;        //  Elevation of view angle
 int zh=0;         //  Azimuth of light
 int spin=0;       //  Spin speed
+int rotate=1;     //  Rotate scene
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 int light=1;      //  Lighting
@@ -605,6 +606,9 @@ void key(unsigned char ch,int x,int y)
   //  Toggle growing graph
   else if (ch == 'g' || ch == 'G')
      growing_graph = 1-growing_graph;
+  //  Toggle growing graph
+  else if (ch == 'r' || ch == 'R')
+     rotate = 1-rotate;
   //  Light elevation
   else if (ch=='[')
      ylight -= 0.1;
@@ -666,8 +670,10 @@ void timer_animate_graph()
  */
 void timer_rotate_scene()
 {
-  th += 0.5f;
-  th = fmod(th, 360.0f);
+  if (rotate) {
+    th += 0.5f;
+    th = fmod(th, 360.0f);
+  }
   glutTimerFunc(1,timer_rotate_scene, 0);
 }
 
