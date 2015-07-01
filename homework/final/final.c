@@ -625,6 +625,7 @@ void readCSV(char* file_name, int num_cols, int store[][num_cols])
     }
     counter++;
   }
+  fclose(e_stream);
 }
 
 /*
