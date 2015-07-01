@@ -550,10 +550,14 @@ void display()
   }
   //  Display parameters
   glWindowPos2i(5,5);
-  //Print("Angle=%d,%d  Dim=%.1f Light=%s",th,ph,dim,light?"On":"Off");
-  //Print("Angle=%.1f,%d  Dim=%.1f",th,ph,dim);
-  Print("Developer %d and %d modified same files. %d",
-        edges[edge_counter][0], edges[edge_counter][1], edge_counter);
+  Print("Developer %2d and %2d modified same files. ",
+        edges[edge_counter][0], edges[edge_counter][1]);
+  Print("Progress: %d/%d", edge_counter, num_edges-1);
+  Print(" Light=%s, Fog=%s, Rotate=%s",
+        light?"On":"Off",
+        fog?"On":"Off",
+        rotate?"On":"Off");
+  //Print("Angle=%d,%d  Dim=%.1f",th,ph,dim);
   //  Render the scene and make it visible
   ErrCheck("display");
   glFlush();
