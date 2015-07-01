@@ -553,10 +553,11 @@ void display()
   Print("Developer %2d and %2d modified same files. ",
         edges[edge_counter][0], edges[edge_counter][1]);
   Print("Progress: %d/%d", edge_counter, num_edges-1);
-  Print(" Light=%s, Fog=%s, Rotate=%s",
+  Print(" Light=%s, Fog=%s, Rotate=%s, GrowGraph=%s",
         light?"On":"Off",
         fog?"On":"Off",
-        rotate?"On":"Off");
+        rotate?"On":"Off",
+        growing_graph?"On":"Off");
   //Print("Angle=%d,%d  Dim=%.1f",th,ph,dim);
   //  Render the scene and make it visible
   ErrCheck("display");
