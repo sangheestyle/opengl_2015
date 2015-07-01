@@ -1,6 +1,7 @@
-final project (Prototype)
+Final project
 
-Sanghee Kim
+Author: Sanghee Kim
+
 I use source code written by Willem A. (Vlakkies) Schreuder
 CSCI4229/5229 Fall 2014 as base source code.
 
@@ -13,3 +14,7 @@ Key bindings
   PgDn/PgUp  Zoom in and out
   0          Reset view angle
   ESC        Exit
+
+  g/G        Toggle growing network
+  r/R        Toggle rotating scene
+  f/F        Toggle fog
