@@ -13,7 +13,7 @@ int zh=0;         //  Azimuth of light
 int spin=0;       //  Spin speed
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
-double dim=13.3;  //  Size of world
+double dim=13;  //  Size of world
 int light=1;      //  Lighting
 int move=1;       // Move light
 float ylight=5;   // Elevation of light
@@ -49,6 +49,7 @@ int sky[2];
 
 // Options
 int box=1;
+float land_size=35;
 
 // Header on mac has M_PI otherwise don't
 #ifndef M_PI
@@ -356,6 +357,12 @@ static void cowboy(double x,double y,double z,
  */
 static void Sky(double D)
 {
+
+  //  Save transformation
+  glPushMatrix();
+  //  Offset, scale and rotate
+  glTranslated(0,D-D/4.0,0);
+
   glColor3f(1,1,1);
   glEnable(GL_TEXTURE_2D);
 
@@ -398,6 +405,8 @@ static void Sky(double D)
   glEnd();
 
   glDisable(GL_TEXTURE_2D);
+  //  Undo transformations and textures
+  glPopMatrix();
 }
 
 /*
@@ -449,8 +458,11 @@ void display()
   else
      glDisable(GL_LIGHTING);
 
-  if (box) Sky(3.5*dim);
-
+  if (box) Sky(land_size);
+  // Draw land, trees
+  //land(0,-0.3f,0, land_size,0.2,land_size, 0);
+  //
+  double D = land_size/4.0;
   // draw vertices
   int i;
   for (i = 0; i < num_vertices; i++){
@@ -459,11 +471,11 @@ void display()
       continue;
     } else if (point > 3) {
       double size = 0.15 + (point*0.01);
-      cowboy(vertices[i][0],size*2+1,vertices[i][2],
+      cowboy(vertices[i][0],size*2+1-D,vertices[i][2],
              size, size, size,
              0);
     } else {
-      vertex(vertices[i][0],vertices[i][1],vertices[i][2],
+      vertex(vertices[i][0],vertices[i][1]-D,vertices[i][2],
              0.2,point*0.2,0.2,
              0);
     }
@@ -473,24 +485,22 @@ void display()
   for (i = 0; i < edge_counter; i++) {
     int begin = edges[i][0];
     int end = edges[i][1];
-    edge(vertices[begin][0], vertices[begin][1], vertices[begin][2],
-         vertices[end][0], vertices[end][1], vertices[end][2],
+    edge(vertices[begin][0], vertices[begin][1]-D, vertices[begin][2],
+         vertices[end][0], vertices[end][1]-D, vertices[end][2],
          0.05);
   }
 
-  // Draw land, trees
-  land(0,-0.3f,0, 12,0.2,12, 0);
   float e = edge_counter*0.02 + 1;
   // x,y,z, dx,dy,dz,th, th,tr,lh,lr, green, type
-  tree(8,0,11.5, e*1,e*1,e*1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
-  tree(9,0,9, 1,1,1, 0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
-  tree(11,0,11, 1,e*1,1, 0, 1.3,0.2,1.5,1.0, leaves_colors[2], 3);
+  tree(8,-D,11.5, e*1,e*1,e*1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
+  tree(9,-D,9, 1,1,1, 0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
+  tree(11,-D,11, 1,e*1,1, 0, 1.3,0.2,1.5,1.0, leaves_colors[2], 3);
 
-  tree(-9,0,-10,     e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
-  tree(-10,0,-8,     1,1,1,0, 1.4,0.1,1.8,0.8, leaves_colors[1], 1);
-  tree(-11.5,0,-6.0, e*1,e*1,e*1,0, 1.1,0.3,1.7,0.5, leaves_colors[2], 2);
-  tree(-10,0,-3,     1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 3);
-  tree(-9,0,-5,     1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 4);
+  tree(-9,-D,-10,     e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
+  tree(-10,-D,-8,     1,1,1,0, 1.4,0.1,1.8,0.8, leaves_colors[1], 1);
+  tree(-11.5,-D,-6.0, e*1,e*1,e*1,0, 1.1,0.3,1.7,0.5, leaves_colors[2], 2);
+  tree(-10,-D,-3,     1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 3);
+  tree(-9,-D,-5,     1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 4);
 
   //  Draw axes
   glDisable(GL_LIGHTING);
@@ -610,6 +620,7 @@ void reshape(int width,int height)
   //  Ratio of the width to the height of the window
   asp = (height>0) ? (double)width/height : 1;
   //  Set the viewport to the entire window
+  //glViewport(0,0, width,height);
   glViewport(0,0, width,height);
   //  Set projection
   Project(fov,asp,dim);
