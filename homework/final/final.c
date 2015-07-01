@@ -45,6 +45,10 @@ double leaves_colors[10];
 
 // Texture
 unsigned int grass_texture;
+int sky[2];
+
+// Options
+int box=1;
 
 // Header on mac has M_PI otherwise don't
 #ifndef M_PI
@@ -347,6 +351,54 @@ static void cowboy(double x,double y,double z,
    glPopMatrix();
 }
 
+/*
+ *  Draw sky box
+ */
+static void Sky(double D)
+{
+  glColor3f(1,1,1);
+  glEnable(GL_TEXTURE_2D);
+
+  //  Sides
+  glBindTexture(GL_TEXTURE_2D,sky[0]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.00,0); glVertex3f(-D,-D,-D);
+  glTexCoord2f(0.25,0); glVertex3f(+D,-D,-D);
+  glTexCoord2f(0.25,1); glVertex3f(+D,+D,-D);
+  glTexCoord2f(0.00,1); glVertex3f(-D,+D,-D);
+
+  glTexCoord2f(0.25,0); glVertex3f(+D,-D,-D);
+  glTexCoord2f(0.50,0); glVertex3f(+D,-D,+D);
+  glTexCoord2f(0.50,1); glVertex3f(+D,+D,+D);
+  glTexCoord2f(0.25,1); glVertex3f(+D,+D,-D);
+
+  glTexCoord2f(0.50,0); glVertex3f(+D,-D,+D);
+  glTexCoord2f(0.75,0); glVertex3f(-D,-D,+D);
+  glTexCoord2f(0.75,1); glVertex3f(-D,+D,+D);
+  glTexCoord2f(0.50,1); glVertex3f(+D,+D,+D);
+
+  glTexCoord2f(0.75,0); glVertex3f(-D,-D,+D);
+  glTexCoord2f(1.00,0); glVertex3f(-D,-D,-D);
+  glTexCoord2f(1.00,1); glVertex3f(-D,+D,-D);
+  glTexCoord2f(0.75,1); glVertex3f(-D,+D,+D);
+  glEnd();
+
+  //  Top and bottom
+  glBindTexture(GL_TEXTURE_2D,sky[1]);
+  glBegin(GL_QUADS);
+  glTexCoord2f(0.0,0); glVertex3f(+D,+D,-D);
+  glTexCoord2f(0.5,0); glVertex3f(+D,+D,+D);
+  glTexCoord2f(0.5,1); glVertex3f(-D,+D,+D);
+  glTexCoord2f(0.0,1); glVertex3f(-D,+D,-D);
+
+  glTexCoord2f(1.0,1); glVertex3f(-D,-D,+D);
+  glTexCoord2f(0.5,1); glVertex3f(+D,-D,+D);
+  glTexCoord2f(0.5,0); glVertex3f(+D,-D,-D);
+  glTexCoord2f(1.0,0); glVertex3f(-D,-D,-D);
+  glEnd();
+
+  glDisable(GL_TEXTURE_2D);
+}
 
 /*
  *  OpenGL (GLUT) calls this routine to display the scene
@@ -396,6 +448,8 @@ void display()
   }
   else
      glDisable(GL_LIGHTING);
+
+  if (box) Sky(3.5*dim);
 
   // draw vertices
   int i;
@@ -653,6 +707,8 @@ int main(int argc,char* argv[])
   glutKeyboardFunc(key);
   glutIdleFunc(idle);
   grass_texture = LoadTexBMP("grass.bmp");
+  sky[0] = LoadTexBMP("sky0.bmp");
+  sky[1] = LoadTexBMP("sky1.bmp");
 
   glutTimerFunc(1000, timer_animate_graph, 0);
   glutTimerFunc(1, timer_rotate_scene, 0);
