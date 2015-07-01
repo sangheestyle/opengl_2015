@@ -30,13 +30,17 @@ int shininess =   0;  // Shininess (power of two)
 float shinyvec[1];    // Shininess (value)
 
 // Vertex and Edges
-const int num_vertices = 30;
-const int num_vertex_properties = 4;
+//const int num_vertices = 30;
+//const int num_vertex_properties = 4;
+#define num_vertices 30
+#define num_vertex_properties 4
 int vertices[num_vertices][num_vertex_properties];
 
 // TODO: workaround for Bus error: 10
-const int num_edges = 47;
-const int num_edge_properties = 2;
+//const int num_edges = 47;
+//const int num_edge_properties = 2;
+#define num_edges 47
+#define num_edge_properties 2
 int edges[num_edges][num_edge_properties];
 int edge_counter = 0;
 
