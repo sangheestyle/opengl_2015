@@ -32,7 +32,7 @@ const int num_vertex_properties = 4;
 int vertices[num_vertices][num_vertex_properties];
 
 // TODO: workaround for Bus error: 10
-const int num_edges = 42;
+const int num_edges = 47;
 const int num_edge_properties = 2;
 int edges[num_edges][num_edge_properties];
 int edge_counter = 0;
@@ -489,20 +489,20 @@ void display()
          0.07);
   }
 
-  float e = edge_counter*0.02 + 1;
+  float e = edge_counter*0.04 + 1;
   // x,y,z, dx,dy,dz,th, th,tr,lh,lr, green, type
   tree(17,-D,-17, e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
   tree(12,-D,-15, 1,1,1,0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
 
-  tree(12,-D,12, e*1,e*1,e*1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
-  tree(7,-D,10, 1,1,1, 0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
-  tree(8,-D,13, 1,e*1,1, 0, 1.3,0.2,1.5,1.0, leaves_colors[2], 3);
+  tree(14,-D,14, e*1,e*1,e*1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
+  tree(12,-D,13, 1,1,1, 0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
+  tree(10,-D,15, 1,e*1,1, 0, 1.3,0.2,1.5,1.0, leaves_colors[2], 3);
 
-  tree(-15,-D,0, e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
-  tree(-13,-D,5, 1,1,1,0, 1.4,0.1,1.8,0.8, leaves_colors[1], 1);
-  tree(-11,-D,3, e*1,e*1,e*1,0, 1.1,0.3,1.7,0.5, leaves_colors[2], 2);
-  tree(-17,-D,-2, 1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 3);
-  tree(-13,-D,-5, 1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 4);
+  tree(-16,-D,0, e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
+  tree(-15,-D,5, 1,1,1,0, 1.4,0.1,1.8,0.8, leaves_colors[1], 1);
+  tree(-13,-D,3, e*1,e*1,e*1,0, 1.1,0.3,1.7,0.5, leaves_colors[2], 2);
+  tree(-19,-D,-2, 1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 3);
+  tree(-15,-D,-5, 1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 4);
 
   //  Draw axes
   glDisable(GL_LIGHTING);
