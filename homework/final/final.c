@@ -463,8 +463,7 @@ void display()
   // Draw land, trees
   land(0,-0.3f-D,0, land_size,0.2,land_size, 0);
   // draw vertices
-  int i;
-  for (i = 0; i < num_vertices; i++){
+  for (int i = 0; i < num_vertices; i++){
     int point = vertices[i][3];
     if (point == 0) {
       continue;
@@ -481,7 +480,7 @@ void display()
   }
 
   // Draw edges
-  for (i = 0; i < edge_counter; i++) {
+  for (int i = 0; i < edge_counter; i++) {
     int begin = edges[i][0]-1;
     int end = edges[i][1]-1;
     edge(vertices[begin][0], vertices[begin][1]-D, vertices[begin][2],
@@ -636,8 +635,7 @@ void animate_graph()
   edge_counter += 1;
 
   if (edge_counter >= num_edges) {
-    int i;
-    for (i = 0; i < num_vertices; i++) {
+    for (int i = 0; i < num_vertices; i++) {
       vertices[i][3] = 0;
     }
     edge_counter = 0;
