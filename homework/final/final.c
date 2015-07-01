@@ -467,14 +467,15 @@ void display()
     int point = vertices[i][3];
     if (point == 0) {
       continue;
-    } else if (point > 3) {
-      double size = 0.15 + (point*0.01);
-      cowboy(vertices[i][0],size*2+1-D,vertices[i][2],
-             size, size, size,
-             0);
+    } else if (point > 5) {
+      double step_size = 0.03;
+      double fig_size = 0.3 + (point*step_size);
+      cowboy(vertices[i][0],(fig_size+step_size)*3+1.7 - D,vertices[i][2],
+             fig_size, fig_size, fig_size,
+             (point*80)%360);
     } else {
       vertex(vertices[i][0],vertices[i][1]-D,vertices[i][2],
-             0.2,point*0.2,0.2,
+             0.35,point*0.35,0.35,
              0);
     }
   }
@@ -490,15 +491,18 @@ void display()
 
   float e = edge_counter*0.02 + 1;
   // x,y,z, dx,dy,dz,th, th,tr,lh,lr, green, type
-  tree(8,-D,11.5, e*1,e*1,e*1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
-  tree(9,-D,9, 1,1,1, 0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
-  tree(11,-D,11, 1,e*1,1, 0, 1.3,0.2,1.5,1.0, leaves_colors[2], 3);
+  tree(17,-D,-17, e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
+  tree(12,-D,-15, 1,1,1,0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
 
-  tree(-9,-D,-10,     e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
-  tree(-10,-D,-8,     1,1,1,0, 1.4,0.1,1.8,0.8, leaves_colors[1], 1);
-  tree(-11.5,-D,-6.0, e*1,e*1,e*1,0, 1.1,0.3,1.7,0.5, leaves_colors[2], 2);
-  tree(-10,-D,-3,     1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 3);
-  tree(-9,-D,-5,     1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 4);
+  tree(12,-D,12, e*1,e*1,e*1, 0, 1,0.2,2.0,1.0, leaves_colors[0], 1);
+  tree(7,-D,10, 1,1,1, 0, 1,0.2,1.7,1.0, leaves_colors[1], 2);
+  tree(8,-D,13, 1,e*1,1, 0, 1.3,0.2,1.5,1.0, leaves_colors[2], 3);
+
+  tree(-15,-D,0, e*1,e*1,e*1,0, 1.0,0.2,2.1,1.1, leaves_colors[0], 0);
+  tree(-13,-D,5, 1,1,1,0, 1.4,0.1,1.8,0.8, leaves_colors[1], 1);
+  tree(-11,-D,3, e*1,e*1,e*1,0, 1.1,0.3,1.7,0.5, leaves_colors[2], 2);
+  tree(-17,-D,-2, 1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 3);
+  tree(-13,-D,-5, 1,1,1,0, 1.0,0.2,1.4,1.0, leaves_colors[3], 4);
 
   //  Draw axes
   glDisable(GL_LIGHTING);
