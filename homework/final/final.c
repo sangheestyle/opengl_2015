@@ -723,7 +723,7 @@ int main(int argc,char* argv[])
 
   glutTimerFunc(1000, timer_animate_graph, 0);
   glutTimerFunc(1, timer_rotate_scene, 0);
-  obj = LoadOBJ(argv[1]);
+  obj = LoadOBJ("cowboy.obj");
   //  Pass control to GLUT so it can interact with the user
   ErrCheck("init");
   glutMainLoop();
