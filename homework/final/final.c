@@ -16,6 +16,7 @@ int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 int light=1;      //  Lighting
 int move=1;       // Move light
+int growing_graph=1; // Grow graph
 float ylight=5;   // Elevation of light
 
 // Light values
@@ -601,6 +602,9 @@ void key(unsigned char ch,int x,int y)
   //  Toggle light movement
   else if (ch == 's' || ch == 'S')
      move = 1-move;
+  //  Toggle growing graph
+  else if (ch == 'g' || ch == 'G')
+     growing_graph = 1-growing_graph;
   //  Light elevation
   else if (ch=='[')
      ylight -= 0.1;
@@ -652,7 +656,8 @@ void animate_graph()
  */
 void timer_animate_graph()
 {
-  animate_graph();
+  if (growing_graph)
+    animate_graph();
   glutTimerFunc(1000, timer_animate_graph, 0);
 }
 
