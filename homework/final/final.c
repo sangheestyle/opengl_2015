@@ -13,6 +13,7 @@ int ph=15;        //  Elevation of view angle
 int zh=0;         //  Azimuth of light
 int spin=0;       //  Spin speed
 int rotate=1;     //  Rotate scene
+int fog=1;        //  Toggle fog
 int fov=55;       //  Field of view (for perspective)
 double asp=1;     //  Aspect ratio
 int light=1;      //  Lighting
@@ -460,6 +461,26 @@ void display()
   else
      glDisable(GL_LIGHTING);
 
+  // Fog
+  if (fog)
+  {
+    // Fog Mode, almost natural, the further the object the deeper in the fog
+    glFogi(GL_FOG_MODE, GL_LINEAR);
+    // Fog Color, here we can simulate artificial fog effect (smoke?) with color
+    GLfloat fogColor[4] = {0.5f, 0.5f, 0.5f, 1.0f};
+    glFogfv(GL_FOG_COLOR, fogColor);
+    // How Dense Will The Fog Be
+    glFogf(GL_FOG_DENSITY, 0.35f);
+    // Fog Start Depth
+    glFogf(GL_FOG_START, 0.1f);
+    // Fog End Depth, nothing is visible beyond that limit
+    glFogf(GL_FOG_END, 130.0f);
+    // Enable GL_FOG
+    glEnable(GL_FOG);
+  }
+  else
+    glDisable(GL_FOG);
+
   if (box) Sky(land_size);
   double D = land_size/4.0;
   // Draw land, trees
@@ -606,9 +627,12 @@ void key(unsigned char ch,int x,int y)
   //  Toggle growing graph
   else if (ch == 'g' || ch == 'G')
      growing_graph = 1-growing_graph;
-  //  Toggle growing graph
+  //  Toggle rotating scene
   else if (ch == 'r' || ch == 'R')
      rotate = 1-rotate;
+  //  Toggle fog
+  else if (ch == 'f' || ch == 'F')
+     fog = 1-fog;
   //  Light elevation
   else if (ch=='[')
      ylight -= 0.1;
