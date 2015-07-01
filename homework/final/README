@@ -37,10 +37,9 @@ by time. So we can see how developers work together continuously and
 who is the hub or key person of a project from the beginning of project
 to now.
 
-If vertices are just cube, it means they did not contribute much. But,
-if vertices are cowboys, it means they contributed much, and
-they are seemingly important developers in the project.
-
+If vertices are just cubes, it means they did not contribute much. But,
+if vertices are cowboys, it means they contributed much, and they are
+relatively important developers in the project.
 
 6. Things I am proud of and want Professor to take note of:
 I wanted to do and show what I learned from class. Especially,
@@ -53,8 +52,11 @@ e. Obj exported by Blender
 f. Timer function
 
 I have integrated all of them into this program which is showing
-my interest area in my Masterss degree. Comparing to 2D graph program,
+my interest area in my Master's degree. Comparing to 2D graph program,
 this shows more dynamic scenery.
+
+You can recognize that objects are growing by time. I want to show time
+flow also in this graph with growing objects.
 
 Additionally, I intentionally did not apply texture on trees and cubes
 (vertices). This is because, when I applied texture on them, graph seemed
