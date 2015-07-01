@@ -48,7 +48,7 @@ double leaves_colors[10];
 
 // Texture
 unsigned int grass_texture;
-int sky[2];
+int bg_texture[2];
 
 // Options
 int box=1;
@@ -356,9 +356,9 @@ static void cowboy(double x,double y,double z,
 }
 
 /*
- *  Draw sky box
+ *  Draw background box
  */
-static void Sky(double D)
+static void background(double D)
 {
 
   //  Save transformation
@@ -370,7 +370,7 @@ static void Sky(double D)
   glEnable(GL_TEXTURE_2D);
 
   //  Sides
-  glBindTexture(GL_TEXTURE_2D,sky[0]);
+  glBindTexture(GL_TEXTURE_2D,bg_texture[0]);
   glBegin(GL_QUADS);
   glTexCoord2f(0.00,0); glVertex3f(-D,-D,-D);
   glTexCoord2f(0.25,0); glVertex3f(+D,-D,-D);
@@ -394,7 +394,7 @@ static void Sky(double D)
   glEnd();
 
   //  Top and bottom
-  glBindTexture(GL_TEXTURE_2D,sky[1]);
+  glBindTexture(GL_TEXTURE_2D,bg_texture[1]);
   glBegin(GL_QUADS);
   glTexCoord2f(0.0,0); glVertex3f(+D,+D,-D);
   glTexCoord2f(0.5,0); glVertex3f(+D,+D,+D);
@@ -481,7 +481,7 @@ void display()
   else
     glDisable(GL_FOG);
 
-  if (box) Sky(land_size);
+  if (box) background(land_size);
   double D = land_size/4.0;
   // Draw land, trees
   land(0,-0.3f-D,0, land_size,0.2,land_size, 0);
@@ -759,8 +759,8 @@ int main(int argc,char* argv[])
   glutKeyboardFunc(key);
   glutIdleFunc(idle);
   grass_texture = LoadTexBMP("grass.bmp");
-  sky[0] = LoadTexBMP("sky0.bmp");
-  sky[1] = LoadTexBMP("sky1.bmp");
+  bg_texture[0] = LoadTexBMP("background0.bmp");
+  bg_texture[1] = LoadTexBMP("background1.bmp");
 
   glutTimerFunc(1000, timer_animate_graph, 0);
   glutTimerFunc(1, timer_rotate_scene, 0);
