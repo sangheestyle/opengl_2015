@@ -49,7 +49,7 @@ int sky[2];
 
 // Options
 int box=1;
-float land_size=35;
+float land_size=45;
 
 // Header on mac has M_PI otherwise don't
 #ifndef M_PI
@@ -361,7 +361,7 @@ static void Sky(double D)
   //  Save transformation
   glPushMatrix();
   //  Offset, scale and rotate
-  glTranslated(0,D-D/4.0,0);
+  glTranslated(0,D-D/3.0,0);
 
   glColor3f(1,1,1);
   glEnable(GL_TEXTURE_2D);
@@ -459,10 +459,9 @@ void display()
      glDisable(GL_LIGHTING);
 
   if (box) Sky(land_size);
-  // Draw land, trees
-  //land(0,-0.3f,0, land_size,0.2,land_size, 0);
-  //
   double D = land_size/4.0;
+  // Draw land, trees
+  land(0,-0.3f-D,0, land_size,0.2,land_size, 0);
   // draw vertices
   int i;
   for (i = 0; i < num_vertices; i++){
