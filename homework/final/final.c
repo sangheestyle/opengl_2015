@@ -92,7 +92,7 @@ static void tree(double x,double y,double z,
   glColor3f(0.8f,0.4f,0.2f);
   for (int i = 0; i <= 32; i++) {
      // Generate a pair of points, on top and bottom of the strip.
-     glNormal3d( cos(d*i), 0, sin(d*i));  // Normal for BOTH points.
+     glNormal3d( trunk_r*cos(d*i), 0, trunk_r*sin(d*i));  // Normal for BOTH points.
      glVertex3d( trunk_r*cos(d*i), trunk_h, trunk_r*sin(d*i));  // Top point.
      glVertex3d( trunk_r*cos(d*i), 0, trunk_r*sin(d*i));  // Bottom point.
   }
@@ -102,7 +102,6 @@ static void tree(double x,double y,double z,
   glBegin(GL_QUAD_STRIP);
   glColor3f(0,green_depth,0);
   for (int i = 0; i <= 32; i++) {
-     glNormal3d( cos(d*i), leaves_h, sin(d*i));
      // Type 2: Upside narrow
      if (type == 2)
        glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h+leaves_h,
@@ -110,9 +109,12 @@ static void tree(double x,double y,double z,
      // Type 4: Cone style
      else if (type == 4)
        glVertex3d( 0, trunk_h+leaves_h, 0);
-     else
+     else{
+       glNormal3d( leaves_r*cos(d*i), trunk_h+leaves_h,
+                   leaves_r*sin(d*i));
        glVertex3d( leaves_r*cos(d*i), trunk_h+leaves_h,
                    leaves_r*sin(d*i));
+     }
 
      if (type == 3)
        glVertex3d( leaves_r*0.5f*cos(d*i), trunk_h, leaves_r*0.5f*sin(d*i));
@@ -488,7 +490,7 @@ void display()
   // Draw land, trees
   land(0,-0.3f-D,0, land_size,0.2,land_size, 0);
   // draw vertices
-  for (int i = 0; i < num_vertices; i++){
+  for (int i = 0; i <= num_vertices; i++){
     int point = vertices[i][3];
     if (point == 0) {
       continue;
@@ -506,7 +508,7 @@ void display()
   }
 
   // Draw edges
-  for (int i = 0; i <= edge_counter; i++) {
+  for (int i = 0; i < edge_counter; i++) {
     int begin = edges[i][0]-1;
     int end = edges[i][1]-1;
     edge(vertices[begin][0], vertices[begin][1]-D, vertices[begin][2],
